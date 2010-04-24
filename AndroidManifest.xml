@@ -5,6 +5,7 @@
       android:versionName="1.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name"
     	android:theme="@android:style/Theme.NoTitleBar">
+    	<uses-library android:name="com.google.android.maps"/>
         <activity android:name=".MainWindow"
                   android:label="@string/app_name">
             <intent-filter>
@@ -12,8 +13,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+		<activity android:name="TabMap" android:label="@string/app_name">
+			<intent-filter>
+				<category android:name="android.intent.category.EMBED"></category>
+				<action android:name="android.intent.action.MAIN"></action>
+			</intent-filter>
+		</activity>
+
 
     </application>
+	<uses-sdk android:minSdkVersion="3"/>
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
 
 
 </manifest> 

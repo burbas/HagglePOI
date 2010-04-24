@@ -19,6 +19,7 @@ public class TabSettings extends ListActivity {
 	  setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, SETTINGS));
 
 	  ListView lv = getListView();
+	  
 	  lv.setTextFilterEnabled(true);
 
 	  lv.setOnItemClickListener(new OnItemClickListener() {
