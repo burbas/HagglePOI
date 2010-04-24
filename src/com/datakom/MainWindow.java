@@ -45,7 +45,7 @@ public class MainWindow extends TabActivity {
         		.setContent(intent);
        tabHost.addTab(spec);
         	
-        
+       tabHost.setCurrentTabByTag("map");
 
     }
 }
