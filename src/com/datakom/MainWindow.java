@@ -25,27 +25,26 @@ public class MainWindow extends TabActivity {
         spec = tabHost.newTabSpec("map").setIndicator("Map", 
         		res.getDrawable(R.drawable.ic_tab_map))
         		.setContent(intent);
-       tabHost.addTab(spec);
+        tabHost.addTab(spec);
        
-       intent.setClass(this, TabInfo.class);
-       spec = tabHost.newTabSpec("info").setIndicator("Info", 
+        intent.setClass(this, TabInfo.class);
+        spec = tabHost.newTabSpec("info").setIndicator("Info", 
        		res.getDrawable(R.drawable.ic_tab_info))
        		.setContent(intent);
-      tabHost.addTab(spec);
+        tabHost.addTab(spec);
       
-      intent.setClass(this, TabSearch.class);
-      spec = tabHost.newTabSpec("search").setIndicator("Search", 
+        intent.setClass(this, TabSearch.class);
+        spec = tabHost.newTabSpec("search").setIndicator("Search", 
       		res.getDrawable(R.drawable.ic_tab_search))
       		.setContent(intent);
-     tabHost.addTab(spec);
-        
-     intent.setClass(this, TabSettings.class);
+        tabHost.addTab(spec);
+
+        intent.setClass(this, TabSettings.class);
         spec = tabHost.newTabSpec("settings").setIndicator("Settings", 
         		res.getDrawable(R.drawable.ic_tab_settings))
         		.setContent(intent);
-       tabHost.addTab(spec);
-        	
-       tabHost.setCurrentTabByTag("map");
+        tabHost.addTab(spec);
 
+        tabHost.setCurrentTabByTag("map");
     }
 }

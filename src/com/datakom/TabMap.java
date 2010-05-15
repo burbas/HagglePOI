@@ -9,10 +9,9 @@ public class TabMap extends MapActivity {
 	    super.onCreate(icicle);
 	    setContentView(R.layout.maptabview);
 	 }
+	 
 	 @Override
 	 protected boolean isRouteDisplayed() {
 	   return false;
 	 }
-
-	
 }
