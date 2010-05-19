@@ -2,4 +2,12 @@
 <resources>
     <string name="hello">Hello World, MainWindow!</string>
     <string name="app_name">Datakom</string>
+    
+    <string name="welcome">TestService</string>
+	<string name="bindButton">Bind</string>
+	<string name="unBindButton">unBind</string>
+	<string name="invokeButton">Invoke</string>
+	<string name="invokeButton2">Invoke2</string>
+	<string name="serviceStatus">Service Status</string>
+	<string name="notApplicable">N/A</string>
 </resources>

@@ -2,13 +2,8 @@ package com.datakom;
 
 import com.datakom.R;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 import android.app.ListActivity;
 
 public class TabSettings extends ListActivity {
