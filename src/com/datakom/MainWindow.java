@@ -1,5 +1,7 @@
 package com.datakom;
 
+import com.datakom.POIObjects.HaggleConnector;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -45,5 +47,8 @@ public class MainWindow extends TabActivity {
         tabHost.addTab(spec);
         
         tabHost.setCurrentTabByTag("map");
+        
+        //hagglestuff
+        HaggleConnector apa = HaggleConnector.getInstance();
     }
 }

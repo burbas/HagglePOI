@@ -2,10 +2,7 @@ package com.datakom.POIObjects;
 
 import java.util.ArrayList;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
-
 import android.graphics.Bitmap;
 import com.google.android.maps.GeoPoint;
 
@@ -13,34 +10,31 @@ import com.google.android.maps.GeoPoint;
  * @author aa a
  * The POI Object class which represents our POIs
  */
-public class POIObject implements Parcelable {
-	//prettier to subclass instead of type, though this is a prototype
-	private static String LOG_TAG = "POIObject";
+public class POIObject {
 	
 	private int type; 
-	private Bitmap picture;
+	/* Pictures are stored in path: HaggleConnector.STORAGE_PATH */
+	private String picPath;
 	private double rating;
 	private String name;
 	private String description;
 	private GeoPoint point;
+	private ArrayList<GeoPoint> coordsExchange;
 	
-	public POIObject(int type, Bitmap picture, double rating, String name, String description) {
-		Log.d(POIObject.LOG_TAG, "Creating a POI Object");
+	public POIObject(int type, String picPath, double rating, String name, String description) {
+		Log.d(getClass().getSimpleName(), "Creating a POI Object");
 		
 		this.setType(type);
-		this.setPicture(picture);
+		this.setPicPath(picPath);
 		this.setRating(rating);
 		this.setName(name);
 		this.setDescription(description);
-	}
-	
-	public POIObject(Parcel in) {
-		readFromParcel(in);
+		coordsExchange = new ArrayList<GeoPoint>();
 	}
 
 	//measured in microdegrees (degrees * 1E6).
 	public void setPoint(int latitude, int longitude) {
-		Log.d(POIObject.LOG_TAG, "Creating a GeoPoint in setPoint");
+		Log.d(getClass().getSimpleName(), "Creating a GeoPoint in setPoint");
 		
 		GeoPoint g = new GeoPoint(latitude, longitude);
 		this.point = g;
@@ -82,42 +76,16 @@ public class POIObject implements Parcelable {
 		return type;
 	}
 	
-	public void setPicture(Bitmap picture) {
-		this.picture = picture;
+	public void setPicPath(String p) {
+		this.picPath = p;
 	}
 
-	public Bitmap getPicture() {
-		return picture;
-	}
-	
-	//pullers for rest of system
-	public ArrayList<POIObject> getAllObjects() {
-		Log.d(POIObject.LOG_TAG, "pulling all POIObjects from Haggle");
-		return null;
-	}
-	 
-	//pullers for rest of system
-	public POIObject getObject(int id) {
-		Log.d(POIObject.LOG_TAG, "pulling POIObject with id: " + id + " from Haggle");
-		return null;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
+	public ArrayList<GeoPoint> getCoordsExchange() {
+		return coordsExchange;
 	}
-
-	@Override
-	public void writeToParcel(Parcel out, int arg1) {
-		out.writeInt(getType());
-		//out.write
-		//type, picture, rating, name, description, point.
-		
-	}
-	private void readFromParcel(Parcel in) {
-		type = in.readInt();
-	}
-
 }
 
