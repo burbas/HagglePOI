@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MainWindow!</string>
-    <string name="app_name">Datakom</string>
-    
+    <string name="app_name">HagglePOI</string>
 	<string name="shutdownHaggle">Shutdown Haggle</string>
-	
+	<string name="createObj">Create Obj</string>
+	<string name="registerInterest">Register Interest</string>
+	<string name="killApp">kill</string>
 </resources>

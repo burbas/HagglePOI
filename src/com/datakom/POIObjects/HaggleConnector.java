@@ -7,7 +7,10 @@ import org.haggle.DataObject;
 import org.haggle.EventHandler;
 import org.haggle.Node;
 import org.haggle.Handle;
+import org.haggle.DataObject.DataObjectException;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 
 
@@ -39,10 +42,18 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 		}
 		return uniqueInstance;
 	}
+	/* this could be private later on */
+	public Handle getHaggleHandle() {
+		if (hh == null) {
+			Log.e(getClass().getSimpleName(), "Haggle Handle is null!");
+		}
+		
+		return hh;
+	}
 	
 	private int initHaggle() {
 		if (hh != null)
-			return STATUS_OK;
+			return STATUS_OK; 
 
 		Log.d(getClass().getSimpleName(), "Trying to Spawn haggle daemon");
 		
@@ -51,7 +62,7 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 			return STATUS_SPAWN_DAEMON_FAILED;
 		}
 		
-		long pid = Handle.getDaemonPid();
+		long pid = Handle.getDaemonPid(); 
 		Log.d(getClass().getSimpleName(), "Haggle daemon pid is: " + pid);
 
 		
@@ -70,7 +81,7 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 				Log.d(getClass().getSimpleName(), "Haggle event loop started");
 				
 				return STATUS_OK;
-				
+				 
 			} catch (Handle.RegistrationFailedException e) {
 				Log.e(getClass().getSimpleName(), "Registration failed: " + e.getMessage());
 				
@@ -99,8 +110,11 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 	}
 	
 	@Override
-	public void onInterestListUpdate(Attribute[] arg0) {
-		Log.d(getClass().getSimpleName(), "got new interests");
+	public void onInterestListUpdate(Attribute[] arr) {
+		Log.d(getClass().getSimpleName() + ":onInterestListUpdate", "got new interests, size: " +arr.length);
+		for (Attribute a : arr) {
+			Log.d(getClass().getSimpleName(), "Attr: " + a.getName() + ", value:" + a.getValue());
+		}
 	}
 
 	@Override
@@ -113,16 +127,31 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 
 	@Override
 	public void onNewDataObject(DataObject dObj) {
+		if (dObj == null) {
+			Log.e(getClass().getSimpleName() + ":onNewDataObject", "dObj null");
+		}
+		
 		Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data!");
 		
+		Attribute[] all = dObj.getAttributes();
+		
+		if (all != null) {
+			for (Attribute a : all) {
+				Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
+			}
+		} else {
+			Log.e(getClass().getSimpleName() + "onNewDataObject", "ALL IS NULL");
+		}
+		
 		if (dObj.getAttribute("Picture", 0) == null) {
-			Log.d(getClass().getClass().getSimpleName() + ":onNewDataObject", "no picture!");
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "no picture!");
 		}
 	}
 
 	@Override
 	public void onShutdown(int reason) {
-		Log.e(getClass().getSimpleName(), "Haggle Shutdown - panic!");
+		Log.e(getClass().getSimpleName(), "Haggle Shutdown, reason: " + reason);
+		
 	}
 
 	@Override
@@ -139,7 +168,26 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 
 	@Override
 	public int pushPOIObject(POIObject o) {
-		// TODO Auto-generated method stub
+		try {
+			DataObject dObj = new DataObject(o.getPicPath());
+			
+			//bygga bitmap, köra en output mot haggleobj
+			//sätta thumbnail
+			dObj.addAttribute("Time", Long.toString(System.currentTimeMillis()), 1); //making haggleObj unique.
+		
+			dObj.addAttribute("Type", Integer.toString(o.getType()), 1);
+			dObj.addAttribute("Name", o.getName(), 1);
+			dObj.addAttribute("Desc", o.getDescription(), 1);
+			dObj.addAttribute("Rating", Double.toString(o.getRating()), 1);
+			dObj.addAttribute("Latitude", Integer.toString(o.getPoint().getLatitudeE6()), 1);
+			dObj.addAttribute("Longitude", Integer.toString(o.getPoint().getLongitudeE6()), 1);
+			
+			getHaggleHandle().publishDataObject(dObj);
+			
+		} catch (DataObjectException e) {
+			Log.e(getClass().getSimpleName(), "Could not create object for: " + o.getName());
+		}
+		
 		return 0;
 	}
 }

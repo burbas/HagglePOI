@@ -1,11 +1,14 @@
 package com.datakom;
 
+
+
 import com.datakom.POIObjects.HaggleConnector;
 
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 
 public class MainWindow extends TabActivity {
@@ -50,5 +53,11 @@ public class MainWindow extends TabActivity {
         
         //hagglestuff
         HaggleConnector apa = HaggleConnector.getInstance();
+    }
+    
+    protected void onDestroy() {
+    	super.onDestroy();
+		Log.d(getClass().getSimpleName(), "calling finiHaggle");
+    	HaggleConnector.getInstance().finiHaggle();
     }
 }

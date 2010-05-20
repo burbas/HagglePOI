@@ -6,7 +6,8 @@ package com.datakom.POIObjects;
  */
 public class ObjectTypes {
 
-	public static final int OTHER		= 0;
-	public static final int RESTURANT 	= 1;
-	public static final int PUB 		= 2;
+	//high numbers just to separate them from status codes when adding them as attributes
+	public static final int OTHER		= 100001;
+	public static final int RESTURANT 	= 100002;
+	public static final int PUB 		= 100003;
 }
