@@ -55,7 +55,7 @@ public class TabInfo extends Activity {
         		}
         	}
         });
-	
+	 
         register.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Attribute a = new Attribute("Type", Integer.toString(ObjectTypes.RESTURANT), 1);
