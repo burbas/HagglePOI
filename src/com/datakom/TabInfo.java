@@ -38,7 +38,7 @@ public class TabInfo extends Activity {
         Button shutdown = (Button)findViewById(R.id.shutdownHaggle);
         Button create = (Button)findViewById(R.id.createObj);
         Button register = (Button) findViewById(R.id.registerInterest);
-        Button killApp = (Button) findViewById(R.id.killApp);
+
         
         conn = HaggleConnector.getInstance();
         shutdown.setOnClickListener(new OnClickListener() {
@@ -79,12 +79,6 @@ public class TabInfo extends Activity {
 				}
 			}
 		});
-        killApp.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				 
-			}
-		});
-	
 	}
 	
 	/* Creates the menu items */
