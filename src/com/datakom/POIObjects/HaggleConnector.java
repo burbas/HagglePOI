@@ -159,10 +159,23 @@ public class HaggleConnector implements EventHandler {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public ArrayList<String> getAllObjectNames(){
+		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<POIObject> restaurants = getAllObjects();
+		for(int i = 0; i < restaurants.size(); i++){
+			result.set(i, restaurants.get(i).getName());
+		}
+		return result;
+	}
 
 	//@Override
 	public POIObject getPOIObject(int id) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public POIObject getPOIObjectByName(String name){
 		return null;
 	}
 
@@ -171,8 +184,8 @@ public class HaggleConnector implements EventHandler {
 		try {
 			DataObject dObj = new DataObject(o.getPicPath());
 			
-			//bygga bitmap, köra en output mot haggleobj
-			//sätta thumbnail
+			//bygga bitmap, kï¿½ra en output mot haggleobj
+			//sï¿½tta thumbnail
 			dObj.addAttribute("Time", Long.toString(System.currentTimeMillis()), 1); //making haggleObj unique.
 		
 			dObj.addAttribute("Type", Integer.toString(o.getType()), 1);
