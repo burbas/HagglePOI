@@ -4,8 +4,12 @@
 	<string name="shutdownHaggle">Shutdown Haggle</string>
 	<string name="createObj">Create Obj</string>
 	<string name="registerInterest">Register Interest</string>
+<<<<<<< HEAD
 	<string name="killApp">kill</string>
 	<string name="unregister">unregister</string>
 	<string name="rating">Give your rating</string>
 	<string name="types">Select type</string>
+=======
+	<string name="unregister">Unregister interest</string>
+>>>>>>> 249a4ccc0f787457d8d78431fbb39bc09ed10478
 </resources>
