@@ -43,8 +43,8 @@ public class MainWindow extends TabActivity {
       		.setContent(intent);
         tabHost.addTab(spec);
         
-        intent = new Intent().setClass(this, TabSettings.class);
-        spec = tabHost.newTabSpec("settings").setIndicator("Settings", 
+        intent = new Intent().setClass(this, TabCreate.class);
+        spec = tabHost.newTabSpec("create").setIndicator("Create", 
         		res.getDrawable(R.drawable.ic_tab_settings))
         		.setContent(intent);
         tabHost.addTab(spec);

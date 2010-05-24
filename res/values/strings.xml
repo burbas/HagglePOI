@@ -5,4 +5,6 @@
 	<string name="createObj">Create Obj</string>
 	<string name="registerInterest">Register Interest</string>
 	<string name="killApp">kill</string>
+	<string name="rating">Give your rating</string>
+	<string name="types">Select type</string>
 </resources>

@@ -25,7 +25,7 @@
 				<action android:name="android.intent.action.MAIN"></action>
 			</intent-filter>
 		</activity>
-				<activity android:name="TabSettings" android:label="@string/app_name">
+				<activity android:name="TabCreate" android:label="@string/app_name">
 			<intent-filter>
 				<category android:name="android.intent.category.EMBED"></category>
 				<action android:name="android.intent.action.MAIN"></action>

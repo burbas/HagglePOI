@@ -7,6 +7,9 @@ import com.datakom.POIObjects.ObjectTypes;
 import com.datakom.POIObjects.POIObject;
 
 import android.app.Activity;
+import android.content.Context;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +26,14 @@ public class TabInfo extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabinfoview);
+		
+		/* We create a listener so we can get GPS coordinates */
+		LocationManager mlocManager =
+			(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
+			LocationListener mlocListener = new gpsLocation();
+			mlocManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+			
 		
         Button shutdown = (Button)findViewById(R.id.shutdownHaggle);
         Button create = (Button)findViewById(R.id.createObj);
@@ -42,6 +53,7 @@ public class TabInfo extends Activity {
                 }
         	}
         });
+        
         
         create.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {

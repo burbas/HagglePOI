@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+  
+  <TextView android:id="@+id/label_type"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:text="Type:"
+  />
+  
+   <Spinner 
+    android:id="@+id/spinner_type"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:drawSelectorOnTop="true"
+    android:prompt="@string/types"
+    android:layout_below="@id/label_type"
+   />
+  
+  <TextView android:id="@+id/label_description"
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:layout_below="@id/spinner_type"
+  	android:text="Review:"
+  />
+  	
+  <EditText android:id="@+id/txt_description"
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:background="@android:drawable/editbox_background"
+  	android:layout_below="@id/label_description"
+  />
+  
+  <TextView android:id="@+id/label_score"
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:layout_below="@id/txt_description"
+  	android:text="Rating:"
+   />
+   
+   <Spinner 
+    android:id="@+id/spinner_rating"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:drawSelectorOnTop="true"
+    android:prompt="@string/rating"
+    android:layout_below="@id/label_score"
+   />
+  
+   <Button android:id="@+id/save"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Create object"
+    android:layout_below="@id/spinner_rating" 
+   />
+  	
+  
+  
+  
+  
+</LinearLayout>

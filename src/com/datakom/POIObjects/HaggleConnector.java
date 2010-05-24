@@ -19,7 +19,7 @@ import android.util.Log;
  * 
  * Haggle controller implementing interface
  */
-public class HaggleConnector implements HaggleInterface, EventHandler {
+public class HaggleConnector implements EventHandler {
 	private static final String HAGGLE_TAG = "HagglePOI"; 
 	private static final String STORAGE_PATH = "/sdcard/HagglePOI";
 	
@@ -154,19 +154,19 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 		
 	}
 
-	@Override
+	//@Override
 	public ArrayList<POIObject> getAllObjects() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	//@Override
 	public POIObject getPOIObject(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	//@Override
 	public int pushPOIObject(POIObject o) {
 		try {
 			DataObject dObj = new DataObject(o.getPicPath());
