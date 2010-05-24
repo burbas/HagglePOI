@@ -186,6 +186,7 @@ public class HaggleConnector implements HaggleInterface, EventHandler {
 			
 		} catch (DataObjectException e) {
 			Log.e(getClass().getSimpleName(), "Could not create object for: " + o.getName());
+			//Log.e(getClass().getSimpleName(), e.printStackTrace());
 		}
 		
 		return 0;
