@@ -63,7 +63,7 @@ public class TabInfo extends Activity {
 				if (status == 0) {
 					Log.e(getClass().getSimpleName(), "Registered Interest!");
 				} else {
-					Log.e(getClass().getSimpleName(), "Failed to register Interest! statuS: " + status);
+					Log.e(getClass().getSimpleName(), "Failed to register Interest! status: " + status);
 				}
 			}
 		});

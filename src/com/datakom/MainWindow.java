@@ -57,7 +57,7 @@ public class MainWindow extends TabActivity {
     
     protected void onDestroy() {
     	super.onDestroy();
-		Log.d(getClass().getSimpleName(), "calling finiHaggle");
-    	HaggleConnector.getInstance().finiHaggle();
+		Log.d(getClass().getSimpleName(), "calling shutdownHaggle");
+    	HaggleConnector.getInstance().shutdownHaggle();
     }
 }
