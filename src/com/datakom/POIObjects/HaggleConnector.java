@@ -21,7 +21,7 @@ import android.util.Log;
  */
 public class HaggleConnector implements EventHandler {
 	private static final String HAGGLE_TAG = "HagglePOI"; 
-	private static final String STORAGE_PATH = "/sdcard/HagglePOI";
+	public static final String STORAGE_PATH = "/sdcard/HagglePOI";
 	
 	private Handle hh;
 	
