@@ -27,7 +27,7 @@ public class TabInfo extends Activity {
         Button shutdown = (Button)findViewById(R.id.shutdownHaggle);
         Button create = (Button)findViewById(R.id.createObj);
         Button register = (Button) findViewById(R.id.registerInterest);
-        Button killApp = (Button) findViewById(R.id.killApp);
+        Button unregister = (Button) findViewById(R.id.unregister);
         
         conn = HaggleConnector.getInstance();
         shutdown.setOnClickListener(new OnClickListener() {
@@ -60,16 +60,18 @@ public class TabInfo extends Activity {
 			public void onClick(View v) {
 				Attribute a = new Attribute("Type", Integer.toString(ObjectTypes.RESTURANT), 1);
 				int status = conn.getHaggleHandle().registerInterest(a);
-				if (status == 0) {
-					Log.e(getClass().getSimpleName(), "Registered Interest!");
+				if (status != 0) {
+					Log.d(getClass().getSimpleName(), "Registered Interest!");
 				} else {
 					Log.e(getClass().getSimpleName(), "Failed to register Interest! status: " + status);
 				}
 			}
 		});
-        killApp.setOnClickListener(new OnClickListener() {
+        unregister.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				 
+				 Attribute a = new Attribute("Type", Integer.toString(ObjectTypes.RESTURANT), 1);
+				 Log.d(getClass().getSimpleName(), "Unregistering Interest");
+				 int status = conn.getHaggleHandle().unregisterInterest(a);
 			}
 		});
 	
