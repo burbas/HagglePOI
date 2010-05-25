@@ -9,8 +9,6 @@ import org.haggle.Node;
 import org.haggle.Handle;
 import org.haggle.DataObject.DataObjectException;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.util.Log;
 
 
@@ -163,6 +161,18 @@ public class HaggleConnector implements EventHandler {
 	//@Override
 	public POIObject getPOIObject(int id) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public ArrayList<String> getAllObjectNames(){
+		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<POIObject> restaurants = getAllObjects();
+		for(int i = 0; i < restaurants.size(); i++){
+			result.set(i, restaurants.get(i).getName());
+		}
+		return result;
+	}
+	public POIObject getPOIObjectByName(String name){
 		return null;
 	}
 
