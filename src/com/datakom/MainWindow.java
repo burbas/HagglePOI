@@ -17,6 +17,7 @@ public class MainWindow extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        GpsLocation.getInstance(this.getApplicationContext()); // initalizing GPS
         
         // Create the first tab
         Resources res = getResources();
@@ -50,7 +51,7 @@ public class MainWindow extends TabActivity {
         tabHost.addTab(spec);
         
         tabHost.setCurrentTabByTag("map");
-        
+
         //hagglestuff
         HaggleConnector.getInstance();
     }
