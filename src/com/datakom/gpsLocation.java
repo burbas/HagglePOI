@@ -26,7 +26,7 @@ public class GpsLocation implements LocationListener {
 	
 	public GpsLocation(Context context) {
 		LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		lm.requestLocationUpdates(lm.GPS_PROVIDER, 0, 0, this); //set higher values for min-values on time and movement
+		lm.requestLocationUpdates(lm.GPS_PROVIDER, 5000, 0, this); //set higher values for min-values on time and movement
 		Log.d(getClass().getSimpleName(), "requesting Location Updates");
 	}
 
@@ -39,8 +39,7 @@ public class GpsLocation implements LocationListener {
 		this.latitude = (int) (loc.getLatitude() * 1E6);
 		this.longitude = (int) (loc.getLongitude() * 1E6);
 
-		Log.d(getClass().getSimpleName(), "Latitude " + this.latitude);
-		Log.d(getClass().getSimpleName(), "Longitude " + this.longitude);
+		Log.d(getClass().getSimpleName(), "Lat:" + this.latitude + ", Lon: " + this.longitude);
 	}
 	
 	@Override
