@@ -34,7 +34,7 @@ public class CameraMain extends Activity {
 		buttonClick = (Button) findViewById(R.id.buttonClick);
 		buttonClick.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				preview.camera.takePicture(shutterCallback, rawCallback,
+				preview.camera.takePicture(shutterCallback, rawCallback,      
 						jpegCallback);
 			}
 		});

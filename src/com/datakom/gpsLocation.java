@@ -5,7 +5,7 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
-public class GpsLocation implements LocationListener {
+public class gpsLocation implements LocationListener {
 	private double longitude;
 	private double latitude;
 	
