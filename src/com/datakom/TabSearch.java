@@ -16,11 +16,13 @@ import com.datakom.POIObjects.POIObject;
 public class TabSearch extends Activity {
 	HaggleConnector conn = HaggleConnector.getInstance();
 	protected ArrayList<String> allNames = conn.getAllObjectNames();
-	protected Toast failSearch = new Toast(this);
-    /** Called when the activity is first created. */
+
+	/** Called when the activity is first created. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    
+	    setContentView(R.layout.search_main);
 	    
 	    final AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoComp);
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.search_results, allNames);
@@ -33,8 +35,7 @@ public class TabSearch extends Activity {
                 	loadResult(textView.getText().toString());
                 }
                 else{
-                	failSearch.setText("No match.");
-                	failSearch.show();
+                	Toast.makeText(TabSearch.this, "No match", Toast.LENGTH_SHORT).show();
                 }
             }
         });

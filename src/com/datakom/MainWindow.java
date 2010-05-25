@@ -52,7 +52,7 @@ public class MainWindow extends TabActivity {
         tabHost.setCurrentTabByTag("map");
         
         //hagglestuff
-        HaggleConnector apa = HaggleConnector.getInstance();
+        HaggleConnector.getInstance();
     }
     
     protected void onDestroy() {

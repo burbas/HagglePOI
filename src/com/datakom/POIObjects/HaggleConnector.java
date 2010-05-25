@@ -166,12 +166,18 @@ public class HaggleConnector implements EventHandler {
 	
 	public ArrayList<String> getAllObjectNames(){
 		ArrayList<String> result = new ArrayList<String>();
-		ArrayList<POIObject> restaurants = getAllObjects();
-		for(int i = 0; i < restaurants.size(); i++){
-			result.set(i, restaurants.get(i).getName());
+		ArrayList<POIObject> collection = getAllObjects();
+		
+		if (getAllObjects() == null) {
+			Log.d(getClass().getSimpleName(), "getAllObjects returned null");
+			return null;
+		} 
+		for (POIObject p : collection) {
+			result.add(p.getName());
 		}
 		return result;
 	}
+	
 	public POIObject getPOIObjectByName(String name){
 		return null;
 	}
