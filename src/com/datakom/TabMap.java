@@ -35,7 +35,7 @@ public class TabMap extends MapActivity {
 //	    } else {
 //	    	Log.e(getClass().getSimpleName(), "Current point is null");
 //	    }
-	    new Thread(new UpdateCenter(gpsLocation, mc, drawable)).start();
+	    new Thread(new UpdateCenter(gpsLocation, mv,  mc, drawable)).start();
 
 	 }
 
@@ -44,22 +44,27 @@ public class TabMap extends MapActivity {
 	  return false;
 	}
 	
-	/* Prints out center point continously from gps with image */
+	/* waits until GPS gives valid points, sets current position to center of the map with an icon*/
 	class UpdateCenter implements Runnable {
 		private GpsLocation gpsLocation;
 		private MapController mc;
+		private MapView mv;
 		private List<Overlay> mapOverlays;
 		private Drawable drawable; 
 		private GeoPoint p = null;
-		public UpdateCenter(GpsLocation gpsLocation, MapController mc, Drawable drawable) {
+		private boolean running = true;
+		
+		public UpdateCenter(GpsLocation gpsLocation, MapView mv, MapController mc, Drawable drawable) {
 			this.gpsLocation = gpsLocation;
 			this.mc = mc;
 			this.drawable = drawable;
+			this.mv = mv;
 		}
 		@Override
 		public void run() {
-			while (true) {
+			while (running) {
 				Log.d(getClass().getSimpleName(), "Running!");
+				
 				p = gpsLocation.getCurrentPoint();
 				if (p != null) {
 					mc.setCenter(p);
@@ -67,11 +72,13 @@ public class TabMap extends MapActivity {
 					MapOverlay itemizedOverlay = new MapOverlay(drawable);
 					itemizedOverlay.addOverlay(new OverlayItem(p, "", ""));
 					mapOverlays.add(itemizedOverlay);
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						Log.e(getClass().getSimpleName(), "Error occured: " + e.getMessage());
-					}
+					running = false;
+				}
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					Log.e(getClass().getSimpleName(), "Sleep failed!");
 				}
 			}
 		}
