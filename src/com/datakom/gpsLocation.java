@@ -29,7 +29,7 @@ public class GpsLocation implements LocationListener {
 		lm.requestLocationUpdates(lm.GPS_PROVIDER, 0, 0, this); //set higher values for min-values on time and movement
 		Log.d(getClass().getSimpleName(), "requesting Location Updates");
 	}
-	
+
 	@Override
 	public void onLocationChanged(Location loc) {
 		// Pick out the latitude resp longitude

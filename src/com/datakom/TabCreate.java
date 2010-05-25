@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 
 public class TabCreate extends Activity {
 
@@ -36,7 +37,14 @@ public class TabCreate extends Activity {
 	    s_rating.setAdapter(adapter);
 	  
 	  Button create = (Button) findViewById(R.id.save);
-	    
+	  Button add_picture = (Button) findViewById(R.id.add_picture);
+	  
+	  add_picture.setOnClickListener(new OnClickListener() {
+		  public void onClick(View v) {
+			  Intent camera = new Intent(v.getContext(), CameraMain.class);
+			  startActivityForResult(camera, 0);
+		  }
+	  });
 	    
 	    create.setOnClickListener(new OnClickListener() {
         	public void onClick(View v){
