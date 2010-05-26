@@ -11,6 +11,20 @@
     android:text="Add picture"
    />
    
+  <TextView android:id="@+id/label_title"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:text="Title:"
+  	android:layout_below="@id/add_picture" 
+  />
+  
+  <EditText android:id="@+id/txt_title"
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:background="@android:drawable/editbox_background"
+  	android:layout_below="@id/label_title"
+  />
+  
   <TextView android:id="@+id/label_type"
   	android:layout_width="fill_parent"
   	android:layout_height="fill_parent"
