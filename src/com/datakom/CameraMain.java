@@ -72,9 +72,9 @@ public class CameraMain extends Activity {
 				outStream.close();
 				Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length);
 			} catch (FileNotFoundException e) {
-				Log.e(getClass().getSimpleName(), e.getMessage());
+				e.printStackTrace();
 			} catch (IOException e) {
-				Log.e(getClass().getSimpleName(), e.getMessage());
+				e.printStackTrace();
 			} finally {
 			}
 			Log.d(TAG, "onPictureTaken - jpeg");
