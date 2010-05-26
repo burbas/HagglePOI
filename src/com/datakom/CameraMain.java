@@ -26,7 +26,7 @@ public class CameraMain extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.camera);
 
 		preview = new CameraPreview(this);
 		((FrameLayout) findViewById(R.id.preview)).addView(preview);

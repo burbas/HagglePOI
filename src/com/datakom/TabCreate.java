@@ -41,8 +41,8 @@ public class TabCreate extends Activity {
 	  
 	  add_picture.setOnClickListener(new OnClickListener() {
 		  public void onClick(View v) {
-			  Intent camera = new Intent(v.getContext(), CameraMain.class);
-			  startActivityForResult(camera, 0);
+			  Intent mycamera = new Intent(v.getContext(), CameraMain.class);
+			  startActivityForResult(mycamera, 0);
 		  }
 	  });
 	    

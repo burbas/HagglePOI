@@ -3,11 +3,13 @@ package com.datakom;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.util.Log;
@@ -36,8 +38,8 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 		// to draw.
 		camera = Camera.open();
 		try {
-			camera.setPreviewDisplay(holder);
 
+			camera.setPreviewDisplay(holder);
 			camera.setPreviewCallback(new PreviewCallback() {
 
 				public void onPreviewFrame(byte[] data, Camera arg1) {
@@ -75,7 +77,9 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 		// Now that the size is known, set up the camera parameters and begin
 		// the preview.
 		Camera.Parameters parameters = camera.getParameters();
-		parameters.setPreviewSize(w, h);
+		List<Camera.Size> previewSize;
+		previewSize = parameters.getSupportedPreviewSizes();
+		parameters.setPreviewSize(previewSize.get(3).width, previewSize.get(3).height);
 		camera.setParameters(parameters);
 		camera.startPreview();
 	}
