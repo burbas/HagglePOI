@@ -45,7 +45,7 @@
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"
   	android:layout_below="@id/spinner_type"
-  	android:text="Review:"
+  	android:text="Description:"
   />
   	
   <EditText android:id="@+id/txt_description"
@@ -77,9 +77,4 @@
     android:text="Create object"
     android:layout_below="@id/spinner_rating" 
    />
-  	
-  
-  
-  
-  
-</LinearLayout>
+  	</LinearLayout>

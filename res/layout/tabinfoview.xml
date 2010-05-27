@@ -4,30 +4,4 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-
-	<Button android:id="@+id/shutdownHaggle"
-	android:text="@string/shutdownHaggle"
-	android:layout_gravity="center_horizontal"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
-	
-	<Button android:id="@+id/createObj"
-	android:text="@string/createObj"
-	android:layout_gravity="center_horizontal"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
-	
-	<Button android:id="@+id/registerInterest"
-	android:text="@string/registerInterest"
-	android:layout_gravity="center_horizontal"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
-	
-	<Button android:id="@+id/unregister"
-	android:text="@string/unregister"
-	android:layout_gravity="center_horizontal"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
-	
-
 </LinearLayout>

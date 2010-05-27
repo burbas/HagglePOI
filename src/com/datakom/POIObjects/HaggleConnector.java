@@ -1,6 +1,7 @@
 package com.datakom.POIObjects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.haggle.Attribute;
 import org.haggle.DataObject;
@@ -77,6 +78,7 @@ public class HaggleConnector implements EventHandler {
 				hh.getApplicationInterestsAsync();
 				
 				Log.d(getClass().getSimpleName(), "Haggle event loop started");
+				registerInterests();
 				
 				return STATUS_OK;
 				 
@@ -102,6 +104,7 @@ public class HaggleConnector implements EventHandler {
 	
 	public int shutdownHaggle() {
 		if (hh != null) {
+			unregisterInterests();
 			return hh.shutdown();
 		}
 		return 1;
@@ -182,15 +185,36 @@ public class HaggleConnector implements EventHandler {
 		return null;
 	}
 
+	private void registerInterests() {
+		List<String> col = ObjectTypes.getAsList();
+		for (String c : col) {
+			Attribute a = new Attribute("Type", c, 1);
+			int status = getHaggleHandle().registerInterest(a);
+			if (status != 0)
+				Log.d(getClass().getSimpleName(), "Registered Interest!: " + c);
+			else
+				Log.e(getClass().getSimpleName(), "Failed to register Interest! status: " + status);
+		}
+	}
+	
+	private void unregisterInterests() {
+		List<String> col = ObjectTypes.getAsList();
+		for (String c : col) {
+			Attribute a = new Attribute("Type", c, 1);
+			int status = getHaggleHandle().unregisterInterest(a);
+			if (status != 0)
+				Log.d(getClass().getSimpleName(), "Unregistered Interest!: " + c);
+			else
+				Log.e(getClass().getSimpleName(), "Failed to unregister Interest! status: " + status);
+		}
+	}
 	//@Override
 	public int pushPOIObject(POIObject o) {
 		try {
-			DataObject dObj = new DataObject(o.getPicPath());
+			DataObject dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
 			
 			//bygga bitmap, köra en output mot haggleobj
 			//sätta thumbnail
-			dObj.addAttribute("Time", Long.toString(System.currentTimeMillis()), 1); //making haggleObj unique.
-		
 			dObj.addAttribute("Type", Integer.toString(o.getType()), 1);
 			dObj.addAttribute("Name", o.getName(), 1);
 			dObj.addAttribute("Desc", o.getDescription(), 1);
@@ -203,8 +227,8 @@ public class HaggleConnector implements EventHandler {
 		} catch (DataObjectException e) {
 			Log.e(getClass().getSimpleName(), "Could not create object for: " + o.getName());
 			Log.e(getClass().getSimpleName(), e.getMessage());
+			return -1;
 		}
-		
 		return 0;
 	}
 }

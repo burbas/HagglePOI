@@ -40,28 +40,28 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 		try {
 
 			camera.setPreviewDisplay(holder);
-			camera.setPreviewCallback(new PreviewCallback() {
-
-				public void onPreviewFrame(byte[] data, Camera arg1) {
-					FileOutputStream outStream = null;
-					try {
-						outStream = new FileOutputStream(String.format(
-								HaggleConnector.STORAGE_PATH+"/%d.jpg", System.currentTimeMillis()));
-						outStream.write(data);
-						outStream.close();
-						Log.d(TAG, "onPreviewFrame - wrote bytes: "
-								+ data.length);
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-					}
-					CameraPreview.this.invalidate();
-				}
-			});
+//			camera.setPreviewCallback(new PreviewCallback() {
+//
+//				public void onPreviewFrame(byte[] data, Camera arg1) {
+//					FileOutputStream outStream = null;
+//					try {
+//						outStream = new FileOutputStream(String.format(
+//								HaggleConnector.STORAGE_PATH+"/%d.jpg", System.currentTimeMillis()));
+//						outStream.write(data);
+//						outStream.close();
+//						Log.d(TAG, "onPreviewFrame - wrote bytes: "
+//								+ data.length);
+//					} catch (FileNotFoundException e) {
+//						Log.e(getClass().getSimpleName(), e.getMessage());
+//					} catch (IOException e) {
+//						Log.e(getClass().getSimpleName(), e.getMessage());
+//					} finally {
+//					}
+//					CameraPreview.this.invalidate();
+//				}
+//			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getSimpleName(), e.getMessage());
 		}
 	}
 

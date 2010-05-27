@@ -5,6 +5,8 @@ import java.util.List;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -17,7 +19,7 @@ public class TabMap extends MapActivity {
 	GpsLocation gpsLocation;
 	private MapView mv;
 	private MapController mc;
-
+	private static final int MENU_QUIT = -1000;
 
 	 @Override
 	 protected void onCreate(Bundle icicle) {
@@ -38,7 +40,21 @@ public class TabMap extends MapActivity {
 	    new Thread(new UpdateCenter(gpsLocation, mv,  mc, drawable)).start();
 
 	 }
+	 /* Creates the menu items */
+	 public boolean onCreateOptionsMenu(Menu menu) {
+		 menu.add(0, MENU_QUIT, 0, "Quit");
+		 return true;
+	 }
 
+	 /* Handles item selections */
+	 public boolean onOptionsItemSelected(MenuItem item) {
+		 switch (item.getItemId()) {
+		 case MENU_QUIT:
+			 finish();
+			 return true;
+		 }
+		 return false;
+	 }
 	@Override
 	protected boolean isRouteDisplayed() {
 	  return false;

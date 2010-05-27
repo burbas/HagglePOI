@@ -3,9 +3,7 @@
  
     <string-array name="types">
         <item>Resturant</item>
-        <item>Cave</item>
-        <item>House</item>
-        <item>Something else</item>
+        <item>Pub</item>
         <item>Others</item>
     </string-array>
     

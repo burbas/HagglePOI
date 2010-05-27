@@ -21,7 +21,7 @@ public class POIObject {
 	private GeoPoint point;
 	private ArrayList<GeoPoint> coordsExchange;
 	
-	public POIObject(int type, String picPath, double rating, String name, String description, int lat, int lon) {
+	public POIObject(int type, String picPath, double rating, String name, String description, GeoPoint p) {
 		Log.d(getClass().getSimpleName(), "Creating a POI Object");
 		
 		this.setType(type);
@@ -29,7 +29,7 @@ public class POIObject {
 		this.setRating(rating);
 		this.setName(name);
 		this.setDescription(description);
-		this.setPoint(lat, lon);
+		this.setPoint(p);
 		coordsExchange = new ArrayList<GeoPoint>();
 	}
 
@@ -40,7 +40,10 @@ public class POIObject {
 		GeoPoint g = new GeoPoint(latitude, longitude);
 		this.point = g;
 	}
-
+	public void setPoint(GeoPoint p) {
+		this.point = p;
+	}
+	
 	public GeoPoint getPoint() {
 		return point;
 	}
