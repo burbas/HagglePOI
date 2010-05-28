@@ -27,9 +27,11 @@ public class TabMap extends MapActivity {
 	    setContentView(R.layout.maptabview);
 	    gpsLocation = GpsLocation.getInstance(null);
 	    mv = (MapView) findViewById(R.id.mapview);
+	    mv.setBuiltInZoomControls(true);
 	    mc = mv.getController();
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 	    mc.setZoom(20);
+
 //	    GeoPoint p = gpsLocation.getCurrentPoint();
 //	    if (p != null) {
 //	    	mc.setCenter(p);

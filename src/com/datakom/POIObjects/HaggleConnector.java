@@ -223,7 +223,6 @@ public class HaggleConnector implements EventHandler {
 			dObj.addAttribute("Longitude", Integer.toString(o.getPoint().getLongitudeE6()), 1);
 			
 			getHaggleHandle().publishDataObject(dObj);
-			
 		} catch (DataObjectException e) {
 			Log.e(getClass().getSimpleName(), "Could not create object for: " + o.getName());
 			Log.e(getClass().getSimpleName(), e.getMessage());

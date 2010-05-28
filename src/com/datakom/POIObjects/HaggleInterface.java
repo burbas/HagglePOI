@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * @author aa a
  *
  * methods for interaction with haggle system from Application
+ * due to time limitations we skip connecting through interface
  */
 public interface HaggleInterface {
 	
