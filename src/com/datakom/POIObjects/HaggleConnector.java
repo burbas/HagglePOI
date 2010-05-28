@@ -35,8 +35,10 @@ public class HaggleConnector implements EventHandler {
 	
 	private static  final int NUM_RETRIES = 2;
 	
-	/* to track automatic callback on pushed dObjs in onNewData */
-	private DataObject lastPusheddObj = null;
+	/* keeping track of every pushed dObj during latest runtime */
+	List<String> md5ObjectList = new ArrayList<String>();
+	/* keeping track of what neighbors exist*/
+	private Node[] neighbors = null;
 	
 	//Singleton instance
 	private static HaggleConnector uniqueInstance;
@@ -127,21 +129,28 @@ public class HaggleConnector implements EventHandler {
 	}
 
 	@Override
-	public void onNeighborUpdate(Node[] neighbors) {
-		Log.d(getClass().getSimpleName(), "");
-		for (Node n : neighbors) {
-			Log.d(getClass().getSimpleName(), "NeighborUpdate: " + n.getName());
+	public void onNeighborUpdate(Node[] newNeighbors) {
+		Log.d(getClass().getSimpleName(), "onNewNeighbours");
+		
+		if (newNeighbors == null) {
+			Log.e(getClass().getSimpleName() + ":NeighborUpdate", "Neighbors null");
+		}
+		
+		/* updating neighborArray */
+		if (newNeighbors.length == 0) {
+			neighbors = null;
+			return;
+		}
+		neighbors = newNeighbors;
+		
+		for (Node n : newNeighbors) {
+			Log.d(getClass().getSimpleName() + ":NeighborUpdate", n.getName());
 		}
 	}
 	
 	@Override
 	public void onNewDataObject(DataObject dObj) { 
-		Log.d(getClass().getSimpleName() + ":onNewDataObject", "callback");
-		
-		if (dObj == null) {
-			Log.e(getClass().getSimpleName() + ":onNewDataObject", "dObj null");
-			return;
-		}
+		Log.d(getClass().getSimpleName() + ":onNewDataObject", "callback occured");
 		
 		String filepath = dObj.getFilePath();
 		/* if there is a random Haggle callback, we disregard :-) */
@@ -151,29 +160,44 @@ public class HaggleConnector implements EventHandler {
 		}
 		
 		Attribute[] all = dObj.getAttributes();
-		/* dObj without attribute is either broken or not interesting*/
-		if (all == null) {
-			Log.e(getClass().getSimpleName() + ":onNewDataObject", "No attributes available");
-			return;
-		}
 		
-		/* to check if it matches the latest pushed dObj from publish */
-		if (dObj.getAttribute("Time", 1).getValue().compareTo(
-									lastPusheddObj.getAttribute("Time", 1).getValue()) == 0) {
-			Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
-			return;
+		//case 2 - newly published dObj is re-presented again
+		//don't modify this data		
+		for (String s : md5ObjectList) {
+			/* doesn't work for some haggleissues reason*/
+//			Log.d("BAJS", s);
+//			Log.d("BAJS", dObj.getAttribute("md5", 1).getValue());
+//			if (dObj.getAttribute("md5", 1).getValue().compareTo(s) == 0) {
+//				Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
+//				return;
+//			}
+			for (Attribute a : all) {
+				if (a.getName().compareTo("md5") == 0 && a.getValue().compareTo(s) == 0) {
+					Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
+					return;
+				}
+			}
+			
 		}
-		
-		Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data!");
-		/* get all attributes */
-		for (Attribute a : all) {			
-			Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
+
+		if (neighbors != null && neighbors.length > 0) {
+			//case 3 - neighbours published data
+			//remove dObj from haggle, create POIObject(?), remove md5-hash from array(?), 
+			//add tracing data and publish it again.
+
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data from neighbor!");
+			/* get all attributes */
+			for (Attribute a : all) {			
+				Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
+			}
+		} else {
+			//case 1 - published material from previous run is re-presented again
+			//don't modify any of this data
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got old data from haggle on start!");
+			for (Attribute a : all) {			
+				Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
+			}
 		}
-		
-		//check if there is any neighbours
-		//if there isn't any neighbours then the data is re-presented after a start.
-		//if there is neighbours work over it as it's new data, that is pick it out and add 
-		//coordinates
 	}
 
 	@Override
@@ -251,11 +275,13 @@ public class HaggleConnector implements EventHandler {
 	}
 	//@Override
 	public int pushPOIObject(POIObject o) {
-		DataObject dObj = null;
+		//for the uniqueness
+		String md5 = Helper.createMD5(String.valueOf(System.currentTimeMillis()));
+		
 		try {
-			dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
-
-			dObj.addAttribute("Time", String.valueOf(System.currentTimeMillis()), 1); //for the uniqueness
+			DataObject dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
+			
+			dObj.addAttribute("md5", md5, 1); 
 			dObj.addAttribute("Type", Integer.toString(o.getType()), 1);
 			dObj.addAttribute("Name", o.getName(), 1);
 			dObj.addAttribute("Desc", o.getDescription(), 1);
@@ -263,22 +289,20 @@ public class HaggleConnector implements EventHandler {
 			dObj.addAttribute("Create_Latitude", Integer.toString(o.getPoint().getLatitudeE6()), 1);
 			dObj.addAttribute("Create_Longitude", Integer.toString(o.getPoint().getLongitudeE6()), 1);
 
-			
-			dObj.addHash();
-
 			Bitmap bmp = scaleImage(dObj.getFilePath(), 32);
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			bmp.compress(CompressFormat.JPEG, 75, os);
 			dObj.setThumbnail(os.toByteArray());
 
 			getHaggleHandle().publishDataObject(dObj);
-			
 		} catch (DataObjectException e) {
 			Log.e(getClass().getSimpleName(), "Could not create object for: " + o.getName());
 			Log.e(getClass().getSimpleName(), e.getMessage());
+			
 			return -1;
 		}
-		lastPusheddObj = dObj; //used to check onNewData if it's the same pushed object or not
+		//on successful publish we add the md5
+		md5ObjectList.add(md5);
 		return 0;
 	}
 }
