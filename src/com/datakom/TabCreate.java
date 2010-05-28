@@ -122,6 +122,10 @@ public class TabCreate extends Activity {
 	}
 	
 	protected void onActivityResult(int reqCode, int resCode, Intent data) {
+		if (data == null) {
+			return;
+		}
+		
 		filepath = (String) data.getExtras().get("filename");
 	}
 }
