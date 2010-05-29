@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -20,6 +22,7 @@ public class TabMap extends MapActivity {
 	private MapView mv;
 	private MapController mc;
 	private static final int MENU_QUIT = -1000;
+	private static final int MENU_MY_LOCATION = MENU_QUIT +1;
 
 	 @Override
 	 protected void onCreate(Bundle icicle) {
@@ -30,7 +33,7 @@ public class TabMap extends MapActivity {
 	    mv.setBuiltInZoomControls(true);
 	    mc = mv.getController();
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-	    mc.setZoom(20);
+	    mc.setZoom(10);
 
 //	    GeoPoint p = gpsLocation.getCurrentPoint();
 //	    if (p != null) {
@@ -44,19 +47,46 @@ public class TabMap extends MapActivity {
 	 }
 	 /* Creates the menu items */
 	 public boolean onCreateOptionsMenu(Menu menu) {
-		 menu.add(0, MENU_QUIT, 0, "Quit");
-		 return true;
-	 }
+		 menu.add(0, MENU_MY_LOCATION, 0, "My location");
+		 
+		// return true;
+	 //}
+	 //public boolean onCreateOptionsMenu(Menu menu) {
+		  boolean result = super.onCreateOptionsMenu(menu);
+
+		  SubMenu myInterests = menu.addSubMenu("My interests");
+		  myInterests.add("Resturant"); 
+		  myInterests.add("Pub");
+		  myInterests.add("Other");
+		  
+		  menu.add(0, MENU_QUIT, 0, "Quit");
+		  
+		  return result;
+		}
 
 	 /* Handles item selections */
 	 public boolean onOptionsItemSelected(MenuItem item) {
 		 switch (item.getItemId()) {
+		 case MENU_MY_LOCATION:
+			 centerMyPos();
+			 return true;
 		 case MENU_QUIT:
 			 finish();
 			 return true;
 		 }
 		 return false;
 	 }
+	 
+	 public void centerMyPos(){
+		GeoPoint current = gpsLocation.getCurrentPoint();
+		mc = mv.getController();
+		if (current != null){
+			mc.setCenter(current);
+		}else{
+			Toast.makeText(TabMap.this, "no point vound", Toast.LENGTH_SHORT).show();
+		}
+	 }
+
 	@Override
 	protected boolean isRouteDisplayed() {
 	  return false;
