@@ -9,8 +9,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="50px"
 		android:textSize="40px"
-		android:gravity="center"
-		android:text="Donken"/>
+		android:gravity="center"/>
 		
     <RelativeLayout
     	android:layout_width="fill_parent"
@@ -67,30 +66,6 @@
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
     	android:stretchColumns="1">
-	    <View
-	        android:layout_height="1dip"
-	        android:background="#FF909090" />
-    	<TableRow>
-	        <TextView
-	            android:gravity="left"
-	            android:text="Mycket goda börjare" />
-	        <TextView
-	            android:text="4/5"
-	            android:gravity="right" />
-	    </TableRow>
-	    <View
-	        android:layout_height="1dip"
-	        android:background="#FF909090" />
-    	<TableRow>
-	        <TextView
-	            android:gravity="left"
-	            android:text="Helt OK." />
-	        <TextView
-	            android:text="3/5"
-	            android:gravity="right" />
-	    </TableRow>
-	    <View
-	        android:layout_height="1dip"
-	        android:background="#FF909090" />
+
     </TableLayout>
 </LinearLayout>
