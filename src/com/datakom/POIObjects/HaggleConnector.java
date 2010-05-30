@@ -1,5 +1,7 @@
 package com.datakom.POIObjects;
 
+import java.io.ByteArrayOutputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,9 @@ import org.haggle.Node;
 import org.haggle.Handle;
 import org.haggle.DataObject.DataObjectException;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
 import android.util.Log;
 
 
@@ -31,6 +36,11 @@ public class HaggleConnector implements EventHandler {
 	private static final int STATUS_SPAWN_DAEMON_FAILED = -3;
 	
 	private static  final int NUM_RETRIES = 2;
+	
+	/* keeping track of every pushed dObj during latest runtime */
+	List<String> md5ObjectList = new ArrayList<String>();
+	/* keeping track of what neighbors exist*/
+	private Node[] neighbors = null;
 	
 	//Singleton instance
 	private static HaggleConnector uniqueInstance;
@@ -121,33 +131,74 @@ public class HaggleConnector implements EventHandler {
 	}
 
 	@Override
-	public void onNeighborUpdate(Node[] neighbors) {
-		Log.d(getClass().getSimpleName(), "");
-		for (Node n : neighbors) {
-			Log.d(getClass().getSimpleName(), "NeighborUpdate: " + n.getName());
-		}
-	}
-
-	@Override
-	public void onNewDataObject(DataObject dObj) {
-		if (dObj == null) {
-			Log.e(getClass().getSimpleName() + ":onNewDataObject", "dObj null");
+	public void onNeighborUpdate(Node[] newNeighbors) {
+		Log.d(getClass().getSimpleName(), "onNewNeighbours");
+		
+		if (newNeighbors == null) {
+			Log.e(getClass().getSimpleName() + ":NeighborUpdate", "Neighbors null");
 		}
 		
-		Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data!");
+		/* updating neighborArray */
+		if (newNeighbors.length == 0) {
+			neighbors = null;
+			return;
+		}
+		neighbors = newNeighbors;
+		
+		for (Node n : newNeighbors) {
+			Log.d(getClass().getSimpleName() + ":NeighborUpdate", n.getName());
+		}
+	}
+	
+	@Override
+	public void onNewDataObject(DataObject dObj) { 
+		Log.d(getClass().getSimpleName() + ":onNewDataObject", "callback occured");
+		
+		String filepath = dObj.getFilePath();
+		/* if there is a random Haggle callback, we disregard :-) */
+		if (filepath == null || filepath.length() == 0) {
+			Log.d(getClass().getSimpleName() + ": onNewDataObject", "Filepath is empty, disregarding dObj");
+			return;
+		}
 		
 		Attribute[] all = dObj.getAttributes();
 		
-		if (all != null) {
+		//case 2 - newly published dObj is re-presented again
+		//don't modify this data		
+		for (String s : md5ObjectList) {
+			/* doesn't work for some haggleissues reason*/
+//			Log.d("BAJS", s);
+//			Log.d("BAJS", dObj.getAttribute("md5", 1).getValue());
+//			if (dObj.getAttribute("md5", 1).getValue().compareTo(s) == 0) {
+//				Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
+//				return;
+//			}
 			for (Attribute a : all) {
+				if (a.getName().compareTo("md5") == 0 && a.getValue().compareTo(s) == 0) {
+					Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
+					return;
+				}
+			}
+			
+		}
+
+		if (neighbors != null && neighbors.length > 0) {
+			//case 3 - neighbours published data
+			//remove dObj from haggle, create POIObject(?), remove md5-hash from array(?), 
+			//add tracing data and publish it again.
+
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data from neighbor!");
+			/* get all attributes */
+			for (Attribute a : all) {			
 				Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
 			}
 		} else {
-			Log.e(getClass().getSimpleName() + "onNewDataObject", "ALL IS NULL");
-		}
-		
-		if (dObj.getAttribute("Picture", 0) == null) {
-			Log.d(getClass().getSimpleName() + ":onNewDataObject", "no picture!");
+			//case 1 - published material from previous run is re-presented again
+			//don't modify any of this data
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got old data from haggle on start!");
+			for (Attribute a : all) {			
+				Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
+			}
 		}
 	}
 
@@ -210,26 +261,50 @@ public class HaggleConnector implements EventHandler {
 				Log.e(getClass().getSimpleName(), "Failed to unregister Interest! status: " + status);
 		}
 	}
+	
+	public Bitmap scaleImage(String filepath, int width) {
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+
+    	opts.inJustDecodeBounds = true;
+    	BitmapFactory.decodeFile(filepath, opts); 
+
+    	double ratio = opts.outWidth / width;
+    	
+    	opts.inSampleSize = (int)ratio;
+    	opts.inJustDecodeBounds = false;
+    	
+    	return BitmapFactory.decodeFile(filepath, opts);
+	}
 	//@Override
 	public int pushPOIObject(POIObject o) {
+		//for the uniqueness
+		String md5 = Helper.createMD5(String.valueOf(System.currentTimeMillis()));
+		
 		try {
 			DataObject dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
 			
-			//bygga bitmap, köra en output mot haggleobj
-			//sätta thumbnail
+			dObj.addAttribute("md5", md5, 1); 
 			dObj.addAttribute("Type", Integer.toString(o.getType()), 1);
 			dObj.addAttribute("Name", o.getName(), 1);
 			dObj.addAttribute("Desc", o.getDescription(), 1);
 			dObj.addAttribute("Rating", Double.toString(o.getRating()), 1);
-			dObj.addAttribute("Latitude", Integer.toString(o.getPoint().getLatitudeE6()), 1);
-			dObj.addAttribute("Longitude", Integer.toString(o.getPoint().getLongitudeE6()), 1);
-			
+			dObj.addAttribute("Create_Latitude", Integer.toString(o.getPoint().getLatitudeE6()), 1);
+			dObj.addAttribute("Create_Longitude", Integer.toString(o.getPoint().getLongitudeE6()), 1);
+
+			Bitmap bmp = scaleImage(dObj.getFilePath(), 32);
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			bmp.compress(CompressFormat.JPEG, 75, os);
+			dObj.setThumbnail(os.toByteArray());
+
 			getHaggleHandle().publishDataObject(dObj);
 		} catch (DataObjectException e) {
 			Log.e(getClass().getSimpleName(), "Could not create object for: " + o.getName());
 			Log.e(getClass().getSimpleName(), e.getMessage());
+			
 			return -1;
 		}
+		//on successful publish we add the md5
+		md5ObjectList.add(md5);
 		return 0;
 	}
 }
