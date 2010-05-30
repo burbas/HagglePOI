@@ -232,6 +232,9 @@ public class HaggleConnector implements EventHandler {
 		return result;
 	}
 	
+	public ArrayList<POIObject> getPOIObjectsByName(String name) {
+		return null;
+	}
 	public POIObject getPOIObjectByName(String name){
 		return null;
 	}
