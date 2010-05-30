@@ -72,7 +72,6 @@ public class TabCreate extends Activity {
 	    			return;
 	    		}
 	    		if (type == null || type.length() <= 0) {
-	    			Log.d("BAJS", "IS IT BAJS:" + s_type.getSelectedItem());
 	    			Toast.makeText(TabCreate.this, "You forgot to choose type", Toast.LENGTH_SHORT).show();
 	    			return;
 	    		}
@@ -95,14 +94,7 @@ public class TabCreate extends Activity {
 	    		} else if(type.compareTo("Pub") == 0) {
 	    			int_type = ObjectTypes.PUB;
 	    		} 
-	    		
-	    		Log.d(getClass().getSimpleName(), "Latitude: " + p.getLatitudeE6() + ", Longitude: " + p.getLongitudeE6());
-	    		Log.d(getClass().getSimpleName(), filepath);
-	    		Log.d(getClass().getSimpleName(), title);
-	    		Log.d(getClass().getSimpleName(), description);
-	    		Log.d(getClass().getSimpleName(), "" + int_type);
-	    		Log.d(getClass().getSimpleName(), rating);
-	    		
+
 	    		POIObject o = new POIObject(int_type, filepath, Double.parseDouble(rating), title, description, p);
         		int status = HaggleConnector.getInstance().pushPOIObject(o);
 	    		
