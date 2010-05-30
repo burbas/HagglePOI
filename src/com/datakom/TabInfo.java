@@ -2,6 +2,8 @@ package com.datakom;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.datakom.POIObjects.HaggleConnector;
+import com.datakom.POIObjects.POIObject;
 
 public class TabInfo extends Activity {
 	HaggleConnector conn;
@@ -28,44 +31,50 @@ public class TabInfo extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabinfoview);
 
-		//First we need to get the data from the intent
-		
-		
-		
 		TableLayout tl = (TableLayout) findViewById(R.id.comment_table);
 		Button showOnMap = (Button) findViewById(R.id.view_on_map_button);
 		
-		tl.addView(addReview("En mycket trevlig resturang\n" + "Jag likert", 4));
-		tl.addView(addReview("Trevlit trevlit", 4));
-		tl.addView(addReview("Haj haj", 4));
-		tl.addView(addReview("Haj haj", 2));
-		tl.addView(addReview("Haj haj", 2));
-		tl.addView(addReview("Haj haj", 1));
-		
-		setTitle("Riffiffi");
-		setStars();
-		getPicture("/sdcard/hehe");
-		
-		// Shows it on the map
-		showOnMap.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				
-				Bundle coordinates = new Bundle();
-				coordinates.putDouble("LATITUDE", 1.00);
-				coordinates.putDouble("BLA", 2.00);
-				
-				Intent mapview = new Intent(TabInfo.this, TabMap.class);
-				mapview.putExtra("com.datakom.TabMap", coordinates);
-				TabInfo.this.startActivity(mapview);
-				
+		//First we need to get the data from the intent
+		Bundle extras = getIntent().getExtras();
+		if(extras != null)
+		{
+			String searchTitle = extras.getString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE);
+			
+			ArrayList<POIObject> objects = HaggleConnector.getInstance().getPOIObjectsByName(searchTitle);
+			
+			for(POIObject poiobj : objects)
+			{
+				setTitle(poiobj.getName());
+				tl.addView(addReview(poiobj.getDescription(), (int)poiobj.getRating()));
+				getPicture(poiobj.getPicPath());
 			}
-		});
-		
-	}
-	
-	// So we can get context from another intent
-	public void onReceive(Context context, Intent intent) {
-		
+			
+			setStars();
+			// Shows it on the map
+			showOnMap.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					
+					Bundle coordinates = new Bundle();
+					coordinates.putDouble("LATITUDE", 1.00);
+					coordinates.putDouble("BLA", 2.00);
+					
+					Intent mapview = new Intent(TabInfo.this, TabMap.class);
+					mapview.putExtra("com.datakom.TabMap", coordinates);
+					TabInfo.this.startActivity(mapview);
+					
+				}
+			});
+			
+		} else {
+			setTitle("Haggle POI Application");
+			showOnMap.setVisibility(8); // Sets the visibility of this object to "GONE"
+			tl.addView(addReview(
+					"This is a sample application to show how Haggle    \n" +
+					"can be used within a point-of-interest application\n" +
+					"application. This was part of a school-project in \n" +
+					"the spring of 2010.", 5));
+			getPicture("/sdcard/hehe");
+		}
 	}
 	
 	
