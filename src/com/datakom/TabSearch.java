@@ -3,6 +3,7 @@ package com.datakom;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,7 +12,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.datakom.POIObjects.HaggleConnector;
-import com.datakom.POIObjects.POIObject;
 
 public class TabSearch extends Activity {
 	HaggleConnector conn = HaggleConnector.getInstance();
@@ -32,7 +32,8 @@ public class TabSearch extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(allNames.contains(textView.getText().toString())){
-                	loadResult(textView.getText().toString());
+                	Intent infoView = new Intent(TabSearch.this, TabInfo.class);
+                	startActivity(infoView);
                 }
                 else{
                 	Toast.makeText(TabSearch.this, "No match", Toast.LENGTH_SHORT).show();
@@ -40,11 +41,6 @@ public class TabSearch extends Activity {
             }
         });
 
-	}
-	
-	protected void loadResult(String input){
-		POIObject result = conn.getPOIObjectByName(input);
-		
 	}
 
 }

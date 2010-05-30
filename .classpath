@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="lib/haggle.jar"/>
+	<classpathentry kind="lib" path="/home/raev/haggle/haggle-0.2-android/haggle.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
