@@ -2,21 +2,17 @@ package com.datakom;
 
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -47,7 +43,7 @@ public class TabInfo extends Activity {
 		tl.addView(addReview("Haj haj", 1));
 		
 		setTitle("Riffiffi");
-		getStars();
+		setStars();
 		getPicture("/sdcard/hehe");
 		
 		// Shows it on the map
@@ -95,55 +91,52 @@ public class TabInfo extends Activity {
 		return title;
 	}
 	
-	// This sets the stars (Bad programming, but we'll maybe fix this later?)
-	protected void getStars()
+	// This sets the stars
+	protected void setStars()
 	{
-		int rounded = java.lang.Math.round(global_rating);
 		ImageView star1 = (ImageView) findViewById(R.id.star_1);
 		ImageView star2 = (ImageView) findViewById(R.id.star_2);
 		ImageView star3 = (ImageView) findViewById(R.id.star_3);
 		ImageView star4 = (ImageView) findViewById(R.id.star_4);
 		ImageView star5 = (ImageView) findViewById(R.id.star_5);
-		
-		if(rounded > 0) {
-			star1.setImageResource(R.drawable.rate_star_big_on);
-			if(rounded > 1) {
-				star2.setImageResource(R.drawable.rate_star_big_on);
-				if(rounded > 2) {
-					star3.setImageResource(R.drawable.rate_star_big_on);
-					if(rounded > 3) {
-						star4.setImageResource(R.drawable.rate_star_big_on);
-						if(rounded > 4) {
-							star5.setImageResource(R.drawable.rate_star_big_on);
-						} else {
-							star5.setImageResource(R.drawable.rate_star_big_off);
-						}
-					} else {
-						star4.setImageResource(R.drawable.rate_star_big_off);
-						star5.setImageResource(R.drawable.rate_star_big_off);
-					}
-				} else {
-					star3.setImageResource(R.drawable.rate_star_big_off);
-					star4.setImageResource(R.drawable.rate_star_big_off);
-					star5.setImageResource(R.drawable.rate_star_big_off);
-				}
-			} else {
-				star2.setImageResource(R.drawable.rate_star_big_off);
-				star3.setImageResource(R.drawable.rate_star_big_off);
-				star4.setImageResource(R.drawable.rate_star_big_off);
-				star5.setImageResource(R.drawable.rate_star_big_off);
-			}
+
+		if(global_rating>4.75){
+			star5.setImageResource(R.drawable.rate_star_big_on);
+		} else if(global_rating>4.25) {
+			star5.setImageResource(R.drawable.rate_star_big_half);
 		} else {
-			star1.setImageResource(R.drawable.rate_star_big_off);
-			star2.setImageResource(R.drawable.rate_star_big_off);
-			star3.setImageResource(R.drawable.rate_star_big_off);
-			star4.setImageResource(R.drawable.rate_star_big_off);
 			star5.setImageResource(R.drawable.rate_star_big_off);
 		}
-		
-
-			
+		if(global_rating>3.75){
+			star4.setImageResource(R.drawable.rate_star_big_on);
+		} else if(global_rating>3.25) {
+			star4.setImageResource(R.drawable.rate_star_big_half);
+		} else {
+			star4.setImageResource(R.drawable.rate_star_big_off);
+		}
+		if(global_rating>2.75){
+			star3.setImageResource(R.drawable.rate_star_big_on);
+		} else if(global_rating>2.25) {
+			star3.setImageResource(R.drawable.rate_star_big_half);
+		} else {
+			star3.setImageResource(R.drawable.rate_star_big_off);
+		}
+		if(global_rating>1.75){
+			star2.setImageResource(R.drawable.rate_star_big_on);
+		} else if(global_rating>1.25) {
+			star2.setImageResource(R.drawable.rate_star_big_half);
+		} else {
+			star2.setImageResource(R.drawable.rate_star_big_off);
+		}
+		if(global_rating>0.75){
+			star1.setImageResource(R.drawable.rate_star_big_on);
+		} else if(global_rating> 0.25){
+			star1.setImageResource(R.drawable.rate_star_big_half);
+		} else {
+			star1.setImageResource(R.drawable.rate_star_big_off);
+		}
 	}
+	
 	// Sets the picture 
 	protected ImageView SetPicture(String path) {
 
