@@ -21,8 +21,8 @@ public class TabMap extends MapActivity {
 	GpsLocation gpsLocation;
 	private MapView mv;
 	private MapController mc;
-	private static final int MENU_QUIT = -1000;
-	private static final int MENU_MY_LOCATION = MENU_QUIT +1;
+	private static final int MENU_QUIT = 1000;
+	private static final int MENU_MY_LOCATION = 1001;
 
 	 @Override
 	 protected void onCreate(Bundle icicle) {
@@ -33,7 +33,7 @@ public class TabMap extends MapActivity {
 	    mv.setBuiltInZoomControls(true);
 	    mc = mv.getController();
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-	    mc.setZoom(10);
+	    mc.setZoom(16);
 
 //	    GeoPoint p = gpsLocation.getCurrentPoint();
 //	    if (p != null) {
@@ -68,7 +68,7 @@ public class TabMap extends MapActivity {
 	 public boolean onOptionsItemSelected(MenuItem item) {
 		 switch (item.getItemId()) {
 		 case MENU_MY_LOCATION:
-			 centerMyPos();
+			 centerMyPosition();
 			 return true;
 		 case MENU_QUIT:
 			 finish();
@@ -77,13 +77,13 @@ public class TabMap extends MapActivity {
 		 return false;
 	 }
 	 
-	 public void centerMyPos(){
+	 public void centerMyPosition(){
 		GeoPoint current = gpsLocation.getCurrentPoint();
 		mc = mv.getController();
 		if (current != null){
 			mc.setCenter(current);
 		}else{
-			Toast.makeText(TabMap.this, "no point vound", Toast.LENGTH_SHORT).show();
+			Toast.makeText(TabMap.this, "GPS hasn't been initilized yet, try again later", Toast.LENGTH_SHORT).show();
 		}
 	 }
 
