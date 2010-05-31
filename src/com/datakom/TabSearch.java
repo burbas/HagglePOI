@@ -11,6 +11,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.datakom.POIObjects.DatabaseHelper;
 import com.datakom.POIObjects.HaggleConnector;
 
 public class TabSearch extends Activity {
@@ -31,14 +32,20 @@ public class TabSearch extends Activity {
 	    final Button button = (Button) findViewById(R.id.searchButton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(allNames.contains(textView.getText().toString())){
-                	Intent infoView = new Intent(TabSearch.this, TabInfo.class);
-                	startActivity(infoView);
-                }
-                else{
-                	Toast.makeText(TabSearch.this, "No match", Toast.LENGTH_SHORT).show();
-                }
+            	DatabaseHelper a = new DatabaseHelper(getApplicationContext());
+            	a.openDatabase();
+            	a.getXmlFromName("e");
+            	a.closeDatabase();
+            	
             }
+//                if(allNames.contains(textView.getText().toString())){
+//                	Intent infoView = new Intent(TabSearch.this, TabInfo.class);
+//                	startActivity(infoView);
+//                }
+//                else{
+//                	Toast.makeText(TabSearch.this, "No match", Toast.LENGTH_SHORT).show();
+//                }
+//            }
         });
 
 	}

@@ -12,6 +12,8 @@ import org.haggle.Node;
 import org.haggle.Handle;
 import org.haggle.DataObject.DataObjectException;
 
+import com.google.android.maps.GeoPoint;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
@@ -28,6 +30,17 @@ public class HaggleConnector implements EventHandler {
 	public static final String STORAGE_PATH = "/sdcard/HagglePOI";
 	public static final String SEARCH_TITLE = "SEARCH_TITLE_KEY";
 	
+	/* used for fetching from DataObject in haggle*/
+	public static final String MD5 = "md5";
+	public static final String TYPE = "Type";
+	public static final String NAME = "Name";
+	public static final String DESC = "Desc";
+	public static final String RATING = "Rating";
+	public static final String C_LAT = "Create_Latitude";
+	public static final String C_LON = "Create_Longitude";
+	public static final String EX_COORD = "Exchange_Coordinates";
+	/* Format for exchange coordinates are lat#Lon*/
+
 	
 	private Handle hh;
 	
@@ -37,10 +50,14 @@ public class HaggleConnector implements EventHandler {
 	
 	private static  final int NUM_RETRIES = 2;
 	
-	/* keeping track of every pushed dObj during latest runtime */
-	List<String> md5ObjectList = new ArrayList<String>();
+
 	/* keeping track of what neighbors exist*/
 	private Node[] neighbors = null;
+
+	/* collection for keeping  track of POIObjects recieved from haggle
+	 * this could be avoided if we traverse the haggle.db and generate XML-objects from
+	 * xmlhdr and parse values into a POIObject, though due to time limimations this design was choosen.*/
+	private HaggleContainer haggleContainer =  HaggleContainer.getInstance(); 
 	
 	//Singleton instance
 	private static HaggleConnector uniqueInstance;
@@ -165,29 +182,31 @@ public class HaggleConnector implements EventHandler {
 		
 		//case 2 - newly published dObj is re-presented again
 		//don't modify this data		
-		for (String s : md5ObjectList) {
-			/* doesn't work for some haggleissues reason*/
-//			Log.d("BAJS", s);
-//			Log.d("BAJS", dObj.getAttribute("md5", 1).getValue());
-//			if (dObj.getAttribute("md5", 1).getValue().compareTo(s) == 0) {
-//				Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
-//				return;
-//			}
+		for (POIObject poi : haggleContainer.getAllPOIObjects()) {
 			for (Attribute a : all) {
-				if (a.getName().compareTo("md5") == 0 && a.getValue().compareTo(s) == 0) {
+				if (a.getName().compareTo("md5") == 0 && a.getValue().compareTo(poi.getMd5()) == 0) {
 					Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
-					return;
+					return; 
 				}
 			}
-			
 		}
-
+		
 		if (neighbors != null && neighbors.length > 0) {
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data from neighbor!");
+			
 			//case 3 - neighbours published data
 			//remove dObj from haggle, create POIObject(?), remove md5-hash from array(?), 
 			//add tracing data and publish it again.
-
-			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data from neighbor!");
+			//parse out thumbnail and store to disk
+			 
+			/* pushing current coordinates for data tracing */
+//			GeoPoint p = new GeoPoint(10, 10);
+//			o.addExchangeCoords(p);
+//			
+//			for (GeoPoint point : o.getCoordsExchange()) {
+//				dObj.addAttribute(EX_COORD, point.getLatitudeE6() + "#" + point.getLongitudeE6(), 1);
+//			}
+//			
 			/* get all attributes */
 			for (Attribute a : all) {			
 				Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
@@ -195,50 +214,78 @@ public class HaggleConnector implements EventHandler {
 		} else {
 			//case 1 - published material from previous run is re-presented again
 			//don't modify any of this data
-			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got old data from haggle on start!");
-			for (Attribute a : all) {			
-				Log.d(getClass().getSimpleName() + ":onNewDataObject", a.getName() + ", " + a.getValue());
-			}
+			haggleContainer.add(parseDataObject(dObj));
+			
+//			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got old data from haggle on start!");
+//			POIObject poi = parseDataObject(dObj);
+//			Log.d("test", poi.getName());
+//			Log.d("test", poi.getPicPath());
+//			Log.d("test", poi.getDescription());
+//			Log.d("test", poi.getMd5());
+//			Log.d("test", "" + poi.getType());
+//			Log.d("test", "lat: " + poi.getPoint().getLatitudeE6() + ", lon: " + poi.getPoint().getLongitudeE6());
+//			Log.d("test", "" + poi.getRating());
+//			Log.d("test", "num exPoint: " + poi.getCoordsExchange().size());
+//			for (GeoPoint p : poi.getCoordsExchange()) {
+//				Log.d("test", "exPoint: " + p.getLatitudeE6() + ", lon: " + p.getLongitudeE6());
+//			}
 		}
 	}
 
+	private POIObject parseDataObject(DataObject dObj) {
+		Log.d(getClass().getSimpleName() + ":parseDataObject", "starting to parse");
+		if (dObj == null || dObj.getFilePath() == null || dObj.getFilePath().length() == 0) {
+			Log.e(getClass().getSimpleName() + ":parseDataObject", "dObj is null or filePath is not right");
+			return null;
+		}
+		
+		if (dObj.getAttributes() == null || dObj.getAttributes().length == 0) {
+			Log.e(getClass().getSimpleName() + ":parseDataObject", "dObj lacks attributes");
+			return null;
+		}
+		
+		int type = Integer.parseInt(dObj.getAttribute(TYPE, 0).getValue());
+		String picPath = dObj.getFilePath();
+		double rating = Double.parseDouble(dObj.getAttribute(RATING, 0).getValue());
+		String name = dObj.getAttribute(NAME, 0).getValue();
+		String desc = dObj.getAttribute(DESC, 0).getValue();
+		int create_latitude = Integer.parseInt(dObj.getAttribute(C_LAT, 0).getValue());
+		int create_longitude = Integer.parseInt(dObj.getAttribute(C_LON, 0).getValue());
+		String md5 = dObj.getAttribute(MD5, 0).getValue();
+		ArrayList<GeoPoint> coordsExchange = new ArrayList<GeoPoint>();
+		
+		Attribute[] attributes = dObj.getAttributes();
+		/* due to the reason haggle doesn't put attributes in order we have to 
+		 * combine for exchange coordinates due to the fact that they can be arbitrary many */
+		for (Attribute a : attributes) {
+			if (a.getName().compareTo(EX_COORD) == 0) {
+				String both = a.getValue();
+				int separator = both.indexOf("#");
+				int latitude = Integer.parseInt(both.substring(0, separator));
+				int longitude = Integer.parseInt(both.substring(separator + 1, both.length()));
+				GeoPoint p = new GeoPoint(latitude, longitude);
+				coordsExchange.add(p);
+			}
+		}
+		return new POIObject(type, picPath, rating, name, desc, create_latitude, create_longitude, md5, coordsExchange);
+	}
+	
 	@Override
 	public void onShutdown(int reason) {
 		Log.e(getClass().getSimpleName(), "Haggle Shutdown, reason: " + reason);
-		
 	}
 
 	//@Override
 	public ArrayList<POIObject> getAllObjects() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	//@Override
-	public POIObject getPOIObject(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return haggleContainer.getAllPOIObjects();
 	}
 	
 	public ArrayList<String> getAllObjectNames(){
-		ArrayList<String> result = new ArrayList<String>();
-		ArrayList<POIObject> collection = getAllObjects();
-		
-		if (getAllObjects() == null) {
-			Log.d(getClass().getSimpleName(), "getAllObjects returned null");
-			return null;
-		} 
-		for (POIObject p : collection) {
-			result.add(p.getName());
-		}
-		return result;
+		return haggleContainer.getAllPOIObjectNames();
 	}
 	
 	public ArrayList<POIObject> getPOIObjectsByName(String name) {
-		return null;
-	}
-	public POIObject getPOIObjectByName(String name){
-		return null;
+		return haggleContainer.search(name);
 	}
 
 	private void registerInterests() {
@@ -280,19 +327,22 @@ public class HaggleConnector implements EventHandler {
 	}
 	//@Override
 	public int pushPOIObject(POIObject o) {
-		//for the uniqueness
-		String md5 = Helper.createMD5(String.valueOf(System.currentTimeMillis()));
-		
+
 		try {
-			DataObject dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
+			DataObject dObj;
+			/* if it's a re-publish it already contains the storage path*/
+			if (o.getPicPath().substring(0, STORAGE_PATH.length()).compareTo(STORAGE_PATH) == 0)
+				dObj = new DataObject(o.getPicPath());
+			else
+				dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
 			
-			dObj.addAttribute("md5", md5, 1); 
-			dObj.addAttribute("Type", Integer.toString(o.getType()), 1);
-			dObj.addAttribute("Name", o.getName(), 1);
-			dObj.addAttribute("Desc", o.getDescription(), 1);
-			dObj.addAttribute("Rating", Double.toString(o.getRating()), 1);
-			dObj.addAttribute("Create_Latitude", Integer.toString(o.getPoint().getLatitudeE6()), 1);
-			dObj.addAttribute("Create_Longitude", Integer.toString(o.getPoint().getLongitudeE6()), 1);
+			dObj.addAttribute(MD5, o.getMd5(), 1); 
+			dObj.addAttribute(TYPE, Integer.toString(o.getType()), 1);
+			dObj.addAttribute(NAME, o.getName(), 1);
+			dObj.addAttribute(DESC, o.getDescription(), 1);
+			dObj.addAttribute(RATING, Double.toString(o.getRating()), 1);
+			dObj.addAttribute(C_LAT, Integer.toString(o.getPoint().getLatitudeE6()), 1);
+			dObj.addAttribute(C_LON, Integer.toString(o.getPoint().getLongitudeE6()), 1);
 
 			Bitmap bmp = scaleImage(dObj.getFilePath(), 32);
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -306,8 +356,8 @@ public class HaggleConnector implements EventHandler {
 			
 			return -1;
 		}
-		//on successful publish we add the md5
-		md5ObjectList.add(md5);
+		//on successful publish we store the POIObject
+		haggleContainer.add(o);
 		return 0;
 	}
 }

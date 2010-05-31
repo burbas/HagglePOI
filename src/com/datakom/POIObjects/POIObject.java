@@ -18,6 +18,7 @@ public class POIObject {
 	private double rating;
 	private String name;
 	private String description;
+	private String md5;
 	private GeoPoint point;
 	private ArrayList<GeoPoint> coordsExchange;
 	
@@ -31,6 +32,13 @@ public class POIObject {
 		this.setDescription(description);
 		this.setPoint(p);
 		coordsExchange = new ArrayList<GeoPoint>();
+		md5 = Helper.createMD5(String.valueOf(System.currentTimeMillis()));
+	}
+
+	public POIObject(int type, String picPath, double rating, String name, String desc, int latitude, int longitude, String md5, ArrayList<GeoPoint> coordsEx) {
+		this(type, picPath, rating, name, desc, new GeoPoint(latitude, longitude));
+		this.setMd5(md5);
+		this.setCoordsExchange(coordsEx);
 	}
 
 	//measured in microdegrees (degrees * 1E6).
@@ -72,6 +80,13 @@ public class POIObject {
 		return name;
 	}
 	
+	public void setMd5(String s) {
+		this.md5 = s;
+	}
+	public String getMd5() {
+		return md5;
+	}
+	
 	public void setType(int type) {
 		this.type = type;
 	}
@@ -90,6 +105,12 @@ public class POIObject {
 
 	public ArrayList<GeoPoint> getCoordsExchange() {
 		return coordsExchange;
+	}
+	public void setCoordsExchange(ArrayList<GeoPoint> arr) {
+		this.coordsExchange = arr;
+	}
+	public void addExchangeCoords(GeoPoint p) {
+		coordsExchange.add(p);
 	}
 }
 
