@@ -22,9 +22,6 @@ public class TabSearch extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.search_main);
-	    allNames = new ArrayList<String>();
-	    allNames.add("din mamma");
-	    allNames.add("din ma");
 	    
 	    
 	    final AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoComp);
@@ -36,7 +33,7 @@ public class TabSearch extends Activity {
             public void onClick(View v) {
                 if(allNames!=null && allNames.contains(textView.getText().toString())){
                 	Intent infoView = new Intent(TabSearch.this, TabInfo.class);
-                	infoView.putExtra("SEARCH_TITLE", textView.getText().toString());
+                	infoView.putExtra(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE, textView.getText().toString());
                 	startActivity(infoView);
                 }
                 else{

@@ -47,7 +47,9 @@ public class TabInfo extends Activity {
 				setTitle(poiobj.getName());
 				tl.addView(addReview(poiobj.getDescription(), (int)poiobj.getRating()));
 				getPicture(poiobj.getPicPath());
+				this.global_rating+=poiobj.getRating();
 			}
+			this.global_rating=this.global_rating/objects.size();
 			
 			setStars();
 			// Shows it on the map
@@ -159,7 +161,7 @@ public class TabInfo extends Activity {
 		TextView commentView = new TextView(TabInfo.this);
 		commentView.setText(comment);
 		
-		this.global_rating = (this.global_rating+rating)/2;
+		//this.global_rating = (this.global_rating+rating)/2;
 		
 		TextView ratingView = new TextView(TabInfo.this);
 		ratingView.setText(rating + "/5");
