@@ -12,6 +12,7 @@ import android.util.Log;
 public class GpsLocation implements LocationListener {
 	private int longitude = 0;
 	private int latitude = 0;
+	private float accuracy = 0;
 
 	private static GpsLocation uniqueInstance;
 	
@@ -35,11 +36,25 @@ public class GpsLocation implements LocationListener {
 		// Pick out the latitude resp longitude
 		loc.getLatitude();
 		loc.getLongitude();
+		// Pick out the GPS accuracy 
+		loc.getAccuracy();
 		
 		this.latitude = (int) (loc.getLatitude() * 1E6);
 		this.longitude = (int) (loc.getLongitude() * 1E6);
+		this.accuracy = loc.getAccuracy();
 
 		Log.d(getClass().getSimpleName(), "Lat:" + this.latitude + ", Lon: " + this.longitude);
+	}
+	
+	public float getAccuracy(){
+		return this.accuracy;
+	}
+	
+	public boolean accurateEnough(){
+		if (getAccuracy() < 30.0){
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
