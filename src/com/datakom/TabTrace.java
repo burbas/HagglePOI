@@ -1,6 +1,10 @@
 package com.datakom;
 
+import java.util.ArrayList;
+
 import com.datakom.POIObjects.HaggleConnector;
+import com.datakom.POIObjects.POIObject;
+import com.google.android.maps.GeoPoint;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,25 +30,20 @@ public class TabTrace extends Activity implements OnClickListener {
 			title = extras.getString("TRACE_OBJECTS");
 			setTitle(title);
 			
+			ArrayList<POIObject> objects = HaggleConnector.getInstance().getPOIObjectsByName(title);
+			ArrayList<GeoPoint> geopoints = null;
+			for(POIObject a : objects)
+			{
+				geopoints = a.getCoordsExchange();
+			}
 			
 			// We need to get the amount of times this object have been exchanged
-			setDescription(5);
+			setDescription(geopoints.size());
 			
 			Button showOnMap = (Button) findViewById(R.id.show_on_map);
-			showOnMap.setOnClickListener(this);
 			// Set the button to listen for clicks
-			showOnMap.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					
-					Bundle coordinates = new Bundle();
-					// We send the object to the map so it can parse the value itself
-					coordinates.putString(com.datakom.POIObjects.HaggleConnector.COORDINATES_REF , title);
-					
-					Intent mapview = new Intent(TabTrace.this, TabMap.class);
-					mapview.putExtra("com.datakom.TabMap", coordinates);
-					TabTrace.this.startActivity(mapview);
-				}
-			}); 
+			showOnMap.setOnClickListener(this);
+
 		} else {
 			setDescription(0);
 		}
@@ -54,6 +53,7 @@ public class TabTrace extends Activity implements OnClickListener {
 		TextView texttitle = (TextView) findViewById(R.id.info_title);
 		texttitle.setText(title);
 	}
+	
 	protected void setDescription(int exchanges)
 	{
 		String title = "This object have been exchanged " + Integer.toString(exchanges) + " times\n\n\n\n";
@@ -65,6 +65,13 @@ public class TabTrace extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		if(v.getId() == R.id.show_on_map) {
 			// This is called when we clicked the button
+			Bundle coordinates = new Bundle();
+			// We send the object to the map so it can parse the value itself
+			coordinates.putString(com.datakom.POIObjects.HaggleConnector.COORDINATES_REF , title);
+			
+			Intent mapview = new Intent(TabTrace.this, TabMap.class);
+			mapview.putExtra("com.datakom.TabMap", coordinates);
+			TabTrace.this.startActivity(mapview);
 		}
 		
 	}
