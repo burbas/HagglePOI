@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+  
+   	<TextView android:id="@+id/info_title"
+		android:layout_width="fill_parent"
+		android:layout_height="50px"
+		android:textSize="40px"
+		android:gravity="center"/>
+   
+  <TextView android:id="@+id/label_info"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:layout_below="@id/info_title" 
+  />
+   <Button android:id="@+id/show_on_map"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Show on map"
+    android:layout_below="@id/label_info" 
+   />
+  	</LinearLayout>
