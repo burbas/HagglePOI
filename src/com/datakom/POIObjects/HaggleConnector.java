@@ -281,8 +281,7 @@ public class HaggleConnector implements EventHandler {
 		}
 		
 		int type = Integer.parseInt(dObj.getAttribute(TYPE, 0).getValue());
-		//removing STORAGE_PATH from beginning of filename, otherwise it will increase on every re-parse
-		String picPath = dObj.getFilePath().substring(STORAGE_PATH.length() + 1);
+		String picPath = dObj.getFileName();
 		double rating = Double.parseDouble(dObj.getAttribute(RATING, 0).getValue());
 		String name = dObj.getAttribute(NAME, 0).getValue();
 		String desc = dObj.getAttribute(DESC, 0).getValue();
@@ -387,8 +386,12 @@ public class HaggleConnector implements EventHandler {
 			dObj.addAttribute(C_LAT, Integer.toString(o.getPoint().getLatitudeE6()), 1);
 			dObj.addAttribute(C_LON, Integer.toString(o.getPoint().getLongitudeE6()), 1);
 
-			//Bitmap bmp = scaleImage(dObj.getFilePath(), 400);
-			Bitmap bmp = BitmapFactory.decodeFile(dObj.getFilePath());
+			/* scaling is done due to the fact that we push our pictures as an attribute, 
+			 * probable limitations in our usage of base64, where we keep the base64 encoded
+			 * data as a String instead of byte array which we outputstream down to haggle 
+			 * addAttribute, it also can be that haggle cannot manage arbitrary long attributes, which
+			 * is more probable...*/
+			Bitmap bmp = scaleImage(dObj.getFilePath(), 200); 
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			bmp.compress(CompressFormat.JPEG, 75, os);
 			byte[] arr = os.toByteArray();
@@ -396,7 +399,6 @@ public class HaggleConnector implements EventHandler {
 			
 			//hacking around haggle, due to getThumbnail crashes android
 			dObj.addAttribute(PIC, base64_pic, 1); 
-//			dObj.setThumbnail(os.toByteArray());
 
 			getHaggleHandle().publishDataObject(dObj);
 		} catch (DataObjectException e) {
