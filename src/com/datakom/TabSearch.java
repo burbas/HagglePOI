@@ -11,7 +11,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.datakom.POIObjects.DatabaseHelper;
 import com.datakom.POIObjects.HaggleConnector;
 
 public class TabSearch extends Activity {
@@ -22,8 +21,11 @@ public class TabSearch extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    
 	    setContentView(R.layout.search_main);
+	    allNames = new ArrayList<String>();
+	    allNames.add("din mamma");
+	    allNames.add("din ma");
+	    
 	    
 	    final AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoComp);
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.search_results, allNames);
@@ -32,22 +34,17 @@ public class TabSearch extends Activity {
 	    final Button button = (Button) findViewById(R.id.searchButton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	DatabaseHelper a = new DatabaseHelper(getApplicationContext());
-            	a.openDatabase();
-            	a.getXmlFromName("e");
-            	a.closeDatabase();
-            	
+                if(allNames!=null && allNames.contains(textView.getText().toString())){
+                	Intent infoView = new Intent(TabSearch.this, TabInfo.class);
+                	infoView.putExtra("SEARCH_TITLE", textView.getText().toString());
+                	startActivity(infoView);
+                }
+                else{
+                	Toast newToast = Toast.makeText(TabSearch.this, "no match.", Toast.LENGTH_SHORT);
+                	newToast.setGravity(48, 0, 60);
+                	newToast.show();
+                }
             }
-//                if(allNames.contains(textView.getText().toString())){
-//                	Intent infoView = new Intent(TabSearch.this, TabInfo.class);
-//                	startActivity(infoView);
-//                }
-//                else{
-//                	Toast.makeText(TabSearch.this, "No match", Toast.LENGTH_SHORT).show();
-//                }
-//            }
         });
-
 	}
-
 }

@@ -33,8 +33,7 @@ public class TabMap extends MapActivity {
 	    mv.setBuiltInZoomControls(true);
 	    mc = mv.getController();
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-	    mc.setZoom(16);
-
+	    mc.setZoom(18);
 //	    GeoPoint p = gpsLocation.getCurrentPoint();
 //	    if (p != null) {
 //	    	mc.setCenter(p);
@@ -54,11 +53,11 @@ public class TabMap extends MapActivity {
 	 //public boolean onCreateOptionsMenu(Menu menu) {
 		  boolean result = super.onCreateOptionsMenu(menu);
 
-		  SubMenu myInterests = menu.addSubMenu("My interests");
+/*		  SubMenu myInterests = menu.addSubMenu("My interests");
 		  myInterests.add("Resturant"); 
 		  myInterests.add("Pub");
 		  myInterests.add("Other");
-		  
+*/		  
 		  menu.add(0, MENU_QUIT, 0, "Quit");
 		  
 		  return result;
@@ -77,11 +76,18 @@ public class TabMap extends MapActivity {
 		 return false;
 	 }
 	 
+	 /* Animates view to GeoPoint and show Latitude, Longitude, accuracy and if the accuracy is within allowed radius */
 	 public void centerMyPosition(){
 		GeoPoint current = gpsLocation.getCurrentPoint();
 		mc = mv.getController();
 		if (current != null){
-			mc.setCenter(current);
+			mc.animateTo(current);
+			Toast.makeText(getBaseContext(), 
+				"Lat: " + gpsLocation.getCurrentPoint().getLatitudeE6() + 
+				"\nLng: " + gpsLocation.getCurrentPoint().getLongitudeE6()+ 
+				"\nAccuracy: "+ gpsLocation.getAccuracy() +
+				"\nAccurate Enough: "+ gpsLocation.accurateEnough(),
+				Toast.LENGTH_SHORT).show();
 		}else{
 			Toast.makeText(TabMap.this, "GPS hasn't been initilized yet, try again later", Toast.LENGTH_SHORT).show();
 		}
