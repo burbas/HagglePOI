@@ -53,11 +53,11 @@ public class TabMap extends MapActivity {
 	 //public boolean onCreateOptionsMenu(Menu menu) {
 		  boolean result = super.onCreateOptionsMenu(menu);
 
-		  SubMenu myInterests = menu.addSubMenu("My interests");
+/*		  SubMenu myInterests = menu.addSubMenu("My interests");
 		  myInterests.add("Resturant"); 
 		  myInterests.add("Pub");
 		  myInterests.add("Other");
-		  
+*/		  
 		  menu.add(0, MENU_QUIT, 0, "Quit");
 		  
 		  return result;
