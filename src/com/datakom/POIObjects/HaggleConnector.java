@@ -1,6 +1,9 @@
 package com.datakom.POIObjects;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,7 @@ import org.haggle.DataObject.DataObjectException;
 
 import com.google.android.maps.GeoPoint;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
@@ -31,6 +35,7 @@ public class HaggleConnector implements EventHandler {
 	public static final String SEARCH_TITLE = "SEARCH_TITLE_KEY";
 	
 	/* used for fetching from DataObject in haggle*/
+	public static final String PIC = "My_Picture";
 	public static final String MD5 = "md5";
 	public static final String TYPE = "Type";
 	public static final String NAME = "Name";
@@ -61,7 +66,13 @@ public class HaggleConnector implements EventHandler {
 	
 	//Singleton instance
 	private static HaggleConnector uniqueInstance;
+		
+	//Context instance from Activity
+	private Context context = null;
 	
+	public void setContext(Context context) {
+		this.context = context;
+	}
 	/* Such that several Activities in Front end can share the same HaggleConnector object*/
 	public static synchronized HaggleConnector getInstance() {
 		if (uniqueInstance == null) {
@@ -70,6 +81,7 @@ public class HaggleConnector implements EventHandler {
 		}
 		return uniqueInstance;
 	}
+	
 	/* this could be private later on */
 	public Handle getHaggleHandle() {
 		if (hh == null) {
@@ -193,12 +205,12 @@ public class HaggleConnector implements EventHandler {
 		
 		if (neighbors != null && neighbors.length > 0) {
 			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data from neighbor!");
-			
 			//case 3 - neighbours published data
 			//remove dObj from haggle, create POIObject(?), remove md5-hash from array(?), 
 			//add tracing data and publish it again.
 			//parse out thumbnail and store to disk
 			 
+
 			/* pushing current coordinates for data tracing */
 //			GeoPoint p = new GeoPoint(10, 10);
 //			o.addExchangeCoords(p);
@@ -216,6 +228,30 @@ public class HaggleConnector implements EventHandler {
 			//don't modify any of this data
 			haggleContainer.add(parseDataObject(dObj));
 			
+			String filename = dObj.getFilePath();
+			Log.e("BAJS", filename);
+			String base64_pic = dObj.getAttribute(PIC, 0).getValue();
+			Bitmap a = convertBase64StringToBitmap(base64_pic);
+			Log.e("BAJS", "HERE: " + a.getWidth());
+			try {
+				
+				FileOutputStream fos = new FileOutputStream(filename + ".bajs.jpg");
+				a.compress(CompressFormat.JPEG, 100, fos);
+				try {
+					fos.flush();
+				} catch (IOException e) {
+					Log.e(getClass().getSimpleName() + ":onNewData", "IOException on flush");
+				}
+				try {
+					fos.close();
+				} catch (IOException e) {
+					Log.e(getClass().getSimpleName() + ":onNewData", "IOException on close");
+				}
+			} catch (FileNotFoundException e) {
+				Log.e(getClass().getSimpleName() + ":onNewData", "FileNotFound while trying to write down picture to disk");
+			}
+			
+
 //			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got old data from haggle on start!");
 //			POIObject poi = parseDataObject(dObj);
 //			Log.d("test", poi.getName());
@@ -245,7 +281,8 @@ public class HaggleConnector implements EventHandler {
 		}
 		
 		int type = Integer.parseInt(dObj.getAttribute(TYPE, 0).getValue());
-		String picPath = dObj.getFilePath();
+		//removing STORAGE_PATH from beginning of filename, otherwise it will increase on every re-parse
+		String picPath = dObj.getFilePath().substring(STORAGE_PATH.length() + 1);
 		double rating = Double.parseDouble(dObj.getAttribute(RATING, 0).getValue());
 		String name = dObj.getAttribute(NAME, 0).getValue();
 		String desc = dObj.getAttribute(DESC, 0).getValue();
@@ -312,6 +349,17 @@ public class HaggleConnector implements EventHandler {
 		}
 	}
 	
+	public Bitmap convertBase64StringToBitmap(String  base64_imagedata) {
+		byte[] imagedata = null;
+		try {
+			imagedata = Base64.decode(base64_imagedata);
+		} catch (IOException e) {
+			Log.e(getClass().getSimpleName(), "Cannot decode base64");
+		}
+		Bitmap result = BitmapFactory.decodeByteArray(imagedata, 0, imagedata.length);
+		return result;
+	 }
+	
 	public Bitmap scaleImage(String filepath, int width) {
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 
@@ -322,7 +370,6 @@ public class HaggleConnector implements EventHandler {
     	
     	opts.inSampleSize = (int)ratio;
     	opts.inJustDecodeBounds = false;
-    	
     	return BitmapFactory.decodeFile(filepath, opts);
 	}
 	//@Override
@@ -330,11 +377,7 @@ public class HaggleConnector implements EventHandler {
 
 		try {
 			DataObject dObj;
-			/* if it's a re-publish it already contains the storage path*/
-			if (o.getPicPath().substring(0, STORAGE_PATH.length()).compareTo(STORAGE_PATH) == 0)
-				dObj = new DataObject(o.getPicPath());
-			else
-				dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
+			dObj = new DataObject(STORAGE_PATH + "/" + o.getPicPath());
 			
 			dObj.addAttribute(MD5, o.getMd5(), 1); 
 			dObj.addAttribute(TYPE, Integer.toString(o.getType()), 1);
@@ -347,7 +390,12 @@ public class HaggleConnector implements EventHandler {
 			Bitmap bmp = scaleImage(dObj.getFilePath(), 32);
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			bmp.compress(CompressFormat.JPEG, 75, os);
-			dObj.setThumbnail(os.toByteArray());
+			byte[] arr = os.toByteArray();
+			String base64_pic = Base64.encodeBytes(arr);
+			
+			//hacking around haggle, due to getThumbnail crashes android
+			dObj.addAttribute(PIC, base64_pic, 1); 
+//			dObj.setThumbnail(os.toByteArray());
 
 			getHaggleHandle().publishDataObject(dObj);
 		} catch (DataObjectException e) {
