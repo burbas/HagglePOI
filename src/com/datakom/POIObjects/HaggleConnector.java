@@ -365,9 +365,9 @@ public class HaggleConnector implements EventHandler {
 
     	opts.inJustDecodeBounds = true;
     	BitmapFactory.decodeFile(filepath, opts); 
-
+    	Log.e("LOL", "outwidth: " + opts.outWidth);
     	double ratio = opts.outWidth / width;
-    	
+    	Log.e("LOL", "ratio: " + ratio);
     	opts.inSampleSize = (int)ratio;
     	opts.inJustDecodeBounds = false;
     	return BitmapFactory.decodeFile(filepath, opts);
@@ -387,7 +387,8 @@ public class HaggleConnector implements EventHandler {
 			dObj.addAttribute(C_LAT, Integer.toString(o.getPoint().getLatitudeE6()), 1);
 			dObj.addAttribute(C_LON, Integer.toString(o.getPoint().getLongitudeE6()), 1);
 
-			Bitmap bmp = scaleImage(dObj.getFilePath(), 32);
+			//Bitmap bmp = scaleImage(dObj.getFilePath(), 400);
+			Bitmap bmp = BitmapFactory.decodeFile(dObj.getFilePath());
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			bmp.compress(CompressFormat.JPEG, 75, os);
 			byte[] arr = os.toByteArray();
