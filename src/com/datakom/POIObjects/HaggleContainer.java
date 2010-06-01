@@ -45,9 +45,14 @@ public class HaggleContainer {
 			return null;
 		}
 		
-		ArrayList<String> ret = new ArrayList<String>(); 
+		ArrayList<String> get = new ArrayList<String>(), ret = new ArrayList<String>(); 
 		for (POIObject poi : collection) {
-			ret.add(poi.getName());
+			get.add(poi.getName());
+		}
+		for(String s : get){
+			if(!ret.contains(s)){
+				ret.add(s);
+			}
 		}
 		return ret;
 	}
