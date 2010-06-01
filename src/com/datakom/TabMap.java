@@ -34,7 +34,7 @@ public class TabMap extends MapActivity {
 	    mv = (MapView) findViewById(R.id.mapview);
 	    mv.setBuiltInZoomControls(true);
 	    mc = mv.getController();
-	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+	    Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_blue);
 	    mc.setZoom(18);
 //	    GeoPoint p = gpsLocation.getCurrentPoint();
 //	    if (p != null) {
@@ -101,7 +101,7 @@ public class TabMap extends MapActivity {
 		}
 	 }
 	 public void plotPoints(List<GeoPoint> points){
-         Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+         Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_red);
          for(GeoPoint o : points){
                  MapOverlay itemizedOverlay = new MapOverlay(drawable);
                  itemizedOverlay.addOverlay(new OverlayItem(o, "", ""));

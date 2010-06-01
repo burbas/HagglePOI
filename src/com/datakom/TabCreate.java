@@ -19,7 +19,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 public class TabCreate extends Activity {
-	private String filepath;
+	private String filename;
 	
 	EditText e_title;
 	Spinner s_type;
@@ -50,7 +50,7 @@ public class TabCreate extends Activity {
 	  add_picture.setOnClickListener(new OnClickListener() {
 		  public void onClick(View v) {
 			  Intent mycamera = new Intent(v.getContext(), CameraMain.class);
-			  filepath = null; //reset last taken picture each time camera is started
+			  filename = null; //reset last taken picture each time camera is started
 			  startActivityForResult(mycamera, 1000);
 		  }
 	  });
@@ -63,7 +63,7 @@ public class TabCreate extends Activity {
 	    		String rating = (String) s_rating.getSelectedItem();
 	    		GeoPoint p = GpsLocation.getInstance(getApplicationContext()).getCurrentPoint();
 
-	    		if (filepath == null) {
+	    		if (filename == null) {
 	    			Toast.makeText(TabCreate.this, "Take a picture before trying to create", Toast.LENGTH_SHORT).show();
 	    			return;
 	    		}
@@ -95,7 +95,7 @@ public class TabCreate extends Activity {
 	    			int_type = ObjectTypes.PUB;
 	    		} 
 
-	    		POIObject o = new POIObject(int_type, filepath, Double.parseDouble(rating), title, description, p);
+	    		POIObject o = new POIObject(int_type, filename, Double.parseDouble(rating), title, description, p);
         		int status = HaggleConnector.getInstance().pushPOIObject(o);
 	    		
         		if (status < 0) {
@@ -106,7 +106,7 @@ public class TabCreate extends Activity {
         		Toast.makeText(TabCreate.this, "POIObject created and pushed down", Toast.LENGTH_SHORT).show();
 	    		
 	    		//reset all fields
-	    		filepath = null;
+	    		filename = null;
 	    		e_title.setText("");
 	    		e_description.setText("");
 	    	}
@@ -118,6 +118,6 @@ public class TabCreate extends Activity {
 			return;
 		}
 		
-		filepath = (String) data.getExtras().get("filename");
+		filename = (String) data.getExtras().get("filename");
 	}
 }

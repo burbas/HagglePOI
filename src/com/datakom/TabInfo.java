@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,14 +21,18 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.datakom.POIObjects.HaggleConnector;
 import com.datakom.POIObjects.POIObject;
+import com.google.android.maps.GeoPoint;
 
-public class TabInfo extends Activity {
+public class TabInfo extends Activity implements OnClickListener {
 	HaggleConnector conn;
 	
-	private float global_rating = 0;
+	private double global_rating = 0.0;
+	private boolean real_object = false;
+	private String searchTitle = "";
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,34 +45,29 @@ public class TabInfo extends Activity {
 		Bundle extras = getIntent().getExtras();
 		if(extras != null)
 		{
-			String searchTitle = extras.getString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE);
+			this.real_object = true;
+			
+			searchTitle = extras.getString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE);
+			setTitle(searchTitle);
 			
 			ArrayList<POIObject> objects = HaggleConnector.getInstance().getPOIObjectsByName(searchTitle);
+			
+			GeoPoint position;
 			
 			for(POIObject poiobj : objects)
 			{
 				setTitle(poiobj.getName());
 				tl.addView(addReview(poiobj.getDescription(), (int)poiobj.getRating()));
 				getPicture(poiobj.getPicPath());
+				
+				position = poiobj.getPoint();
 				this.global_rating+=poiobj.getRating();
 			}
 			this.global_rating=this.global_rating/objects.size();
 			
 			setStars();
-			// Shows it on the map
-			showOnMap.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					
-					Bundle coordinates = new Bundle();
-					coordinates.putDouble("LATITUDE", 1.00);
-					coordinates.putDouble("BLA", 2.00);
-					
-					Intent mapview = new Intent(TabInfo.this, TabMap.class);
-					mapview.putExtra("com.datakom.TabMap", coordinates);
-					TabInfo.this.startActivity(mapview);
-					
-				}
-			});
+			// Bind the button to listenerclass (this)
+			showOnMap.setOnClickListener(this);
 			
 		} else {
 			setTitle("Haggle POI Application");
@@ -73,10 +75,33 @@ public class TabInfo extends Activity {
 			tl.addView(addReview(
 					"This is a sample application to show how Haggle    \n" +
 					"can be used within a point-of-interest application\n" +
-					"application. This was part of a school-project in \n" +
-					"the spring of 2010.", 5));
+					"This was part of a school-project in the spring\n" +
+					"of 2010.", 5));
 			getPicture("/sdcard/hehe");
 		}
+	}
+	
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    if(this.real_object == true) {
+	    	inflater.inflate(R.layout.tabmenu, menu);
+	    }
+	    	
+	    return true;
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.track_exchanges:     
+	        	Bundle objects = new Bundle();
+	        	objects.putString("TRACE_OBJECTS", this.searchTitle);
+	        	Intent traceview = new Intent(TabInfo.this, TabTrace.class);
+				traceview.putExtra("TRACE_OBJECTS", this.searchTitle);
+				TabInfo.this.startActivity(traceview);
+        	break;
+	    }
+	    return true;
 	}
 	
 	
@@ -92,6 +117,12 @@ public class TabInfo extends Activity {
 		} else {
 			iv.setImageResource(R.drawable.btn_rating_star_off_selected);
 		}
+	}
+	
+	protected void getPicture(Bitmap picture) 
+	{
+		ImageView iv = (ImageView) findViewById(R.id.poi_img);
+		iv.setImageBitmap(picture);
 	}
 	
 	// Sets the title of the info tab
@@ -148,21 +179,12 @@ public class TabInfo extends Activity {
 		}
 	}
 	
-	// Sets the picture 
-	protected ImageView SetPicture(String path) {
-
-		ImageView picture = new ImageView(TabInfo.this);
-		
-		return picture;
-	}
-	
 	// Inserts a row with a review
 	protected TableRow addReview(String comment, int rating){
 		TextView commentView = new TextView(TabInfo.this);
 		commentView.setText(comment);
 		
-		//this.global_rating = (this.global_rating+rating)/2;
-		
+					
 		TextView ratingView = new TextView(TabInfo.this);
 		ratingView.setText(rating + "/5");
 		ratingView.setGravity(0x05);
@@ -172,5 +194,23 @@ public class TabInfo extends Activity {
 		tr.addView(commentView);
 		tr.addView(ratingView);
 		return tr;
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.view_on_map_button:
+			Bundle coordinates = new Bundle();
+			coordinates.putDouble("LATITUDE", 1);
+			coordinates.putDouble("LONGITUDE", 2);
+			
+			// View the new intent
+			Intent mapview = new Intent(TabInfo.this, TabMap.class);
+			mapview.putExtra("com.datakom.TabMap", coordinates);
+			TabInfo.this.startActivity(mapview);
+			break;
+		}
+		
 	}
 }
