@@ -70,6 +70,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 		// Because the CameraDevice object is not a shared resource, it's very
 		// important to release it when the activity is paused.
 		camera.stopPreview();
+		camera.release();
 		camera = null;
 	}
 
