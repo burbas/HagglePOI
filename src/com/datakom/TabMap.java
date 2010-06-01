@@ -1,5 +1,6 @@
 package com.datakom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,7 @@ import android.view.SubMenu;
 import android.widget.Toast;
 
 import com.datakom.POIObjects.HaggleConnector;
+import com.datakom.R.string;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -20,6 +22,7 @@ import com.google.android.maps.OverlayItem;
 
 public class TabMap extends MapActivity {
 	GpsLocation gpsLocation;
+	private boolean showingTraces = false;
 	private MapView mv;
 	private MapController mc;
 	private static final int MENU_QUIT = 1000;
@@ -36,35 +39,39 @@ public class TabMap extends MapActivity {
 	    mc = mv.getController();
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_blue);
 	    mc.setZoom(18);
-//	    GeoPoint p = gpsLocation.getCurrentPoint();
-//	    if (p != null) {
-//	    	mc.setCenter(p);
-//		    
-//	    } else {
-//	    	Log.e(getClass().getSimpleName(), "Current point is null");
-//	    }
+	    
+	    Bundle extras = getIntent().getExtras();
+	    if(extras != null){
+    		String name = extras.getString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE);
+	    	if(extras.getString(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE).compareTo("true")==0){
+	    		showingTraces=true;
+	    		ArrayList<GeoPoint> points = HaggleConnector.getInstance().getAllPOITraces(name);
+	    		if(points != null){
+	    			plotPoints(points);
+	    			mc.animateTo(points.get(0));
+	    		}
+	    	}
+	    	else{
+	    		showingTraces=false;
+	    		GeoPoint point = HaggleConnector.getInstance().getPoint(name);
+	    		plotPoint(point);
+	    		mc.animateTo(point);
+	    	}
+	    }
+	    
 	    new Thread(new UpdateCenter(gpsLocation, mv,  mc, drawable)).start();
 
 	 }
 	 /* Creates the menu items */
 	 public boolean onCreateOptionsMenu(Menu menu) {
-		 menu.add(0, MENU_MY_LOCATION, 0, "My location");
-		 
-		 
-		// return true;
-	 //}
-	 //public boolean onCreateOptionsMenu(Menu menu) {
-		  boolean result = super.onCreateOptionsMenu(menu);
-		  menu.add(0, MENU_PLOT, 0, "Plot POIs");
-/*		  SubMenu myInterests = menu.addSubMenu("My interests");
-		  myInterests.add("Resturant"); 
-		  myInterests.add("Pub");
-		  myInterests.add("Other");
-*/		  
-		  menu.add(0, MENU_QUIT, 0, "Quit");
-		  
-		  return result;
-		}
+		 boolean result = super.onCreateOptionsMenu(menu);
+		 if(!showingTraces){
+			 menu.add(0, MENU_MY_LOCATION, 0, "My location");
+			 menu.add(0, MENU_PLOT, 0, "Plot POIs");
+			 menu.add(0, MENU_QUIT, 0, "Quit");
+		 }
+		 return result;
+	 }
 
 	 /* Handles item selections */
 	 public boolean onOptionsItemSelected(MenuItem item) {
@@ -78,14 +85,16 @@ public class TabMap extends MapActivity {
 			 finish();
 			 return true;
 		 case MENU_PLOT:
-		 	plotPoints(HaggleConnector.getInstance().getAllObjectPoints());
-		 	Toast.makeText(this, HaggleConnector.getInstance().countObjects()+ " objects plotted.", Toast.LENGTH_SHORT).show();
-		 	return true;
+			 centerMyPosition();
+			 plotPoints(HaggleConnector.getInstance().getAllObjectPoints());
+			 return true;
 		 }
 		 return false;
 	 }
 	 
-	 /* Animates view to GeoPoint and show Latitude, Longitude, accuracy and if the accuracy is within allowed radius */
+	 /* Animates view to GeoPoint and show Latitude, Longitude, accuracy and if the accuracy is within allowed radius 
+	  * also removes all other plotted items, they will need to be readded to the vm.getOverlays().
+	  */
 	public void centerMyPosition(){
         Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_blue);
 		mv.getOverlays().clear();
@@ -106,14 +115,26 @@ public class TabMap extends MapActivity {
 			Toast.makeText(TabMap.this, "GPS hasn't been initilized yet, try again later", Toast.LENGTH_SHORT).show();
 		}
 	 }
+	/* adds all argumented points to the mapViews overlays. */
 	 public void plotPoints(List<GeoPoint> points){
+		 if(points == null){
+			 Toast.makeText(this, "plotPoints were called with null.", Toast.LENGTH_SHORT).show();
+			 return;
+		 }
          Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_red);
          for(GeoPoint o : points){
-                 MapOverlay itemizedOverlay = new MapOverlay(drawable);
-                 itemizedOverlay.addOverlay(new OverlayItem(o, "", ""));
-                 mv.getOverlays().add(itemizedOverlay);
+             MapOverlay itemizedOverlay = new MapOverlay(drawable);
+             itemizedOverlay.addOverlay(new OverlayItem(o, "", ""));
+             mv.getOverlays().add(itemizedOverlay);
          }
- }
+         Toast.makeText(this, HaggleConnector.getInstance().countObjects()+ " objects plotted.", Toast.LENGTH_SHORT).show();
+	 }
+	 public void plotPoint(GeoPoint point){
+		 Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_red);
+         MapOverlay itemizedOverlay = new MapOverlay(drawable);
+         itemizedOverlay.addOverlay(new OverlayItem(point, "", ""));
+         mv.getOverlays().add(itemizedOverlay);
+	 }
 
 	@Override
 	protected boolean isRouteDisplayed() {
