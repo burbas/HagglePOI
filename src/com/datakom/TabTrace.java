@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TabTrace extends Activity implements OnClickListener {
 
@@ -27,19 +28,17 @@ public class TabTrace extends Activity implements OnClickListener {
 		if(extras != null) {
 			
 			// Get the value of the title and set it as topic
-			title = extras.getString("TRACE_OBJECTS");
+			title = extras.getString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE);
 			setTitle(title);
 			
-			ArrayList<POIObject> objects = HaggleConnector.getInstance().getPOIObjectsByName(title);
-			ArrayList<GeoPoint> geopoints = null;
-			for(POIObject a : objects)
-			{
-				geopoints = a.getCoordsExchange();
+			ArrayList<GeoPoint> geopoints = HaggleConnector.getInstance().getAllPOITraces(title);
+			
+			// We need to get the amount of times this object have been exchanged'
+			if(geopoints==null){
+				Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
+			}else{
+				setDescription(geopoints.size());
 			}
-			
-			// We need to get the amount of times this object have been exchanged
-			setDescription(geopoints.size());
-			
 			Button showOnMap = (Button) findViewById(R.id.show_on_map);
 			// Set the button to listen for clicks
 			showOnMap.setOnClickListener(this);
