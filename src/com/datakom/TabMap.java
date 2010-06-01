@@ -24,6 +24,7 @@ public class TabMap extends MapActivity {
 	private MapController mc;
 	private static final int MENU_QUIT = 1000;
 	private static final int MENU_MY_LOCATION = 1001;
+	private static final int MENU_PLOT = 1002;
 
 	 @Override
 	 protected void onCreate(Bundle icicle) {
@@ -33,7 +34,7 @@ public class TabMap extends MapActivity {
 	    mv = (MapView) findViewById(R.id.mapview);
 	    mv.setBuiltInZoomControls(true);
 	    mc = mv.getController();
-	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+	    Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_blue);
 	    mc.setZoom(18);
 //	    GeoPoint p = gpsLocation.getCurrentPoint();
 //	    if (p != null) {
@@ -49,11 +50,12 @@ public class TabMap extends MapActivity {
 	 public boolean onCreateOptionsMenu(Menu menu) {
 		 menu.add(0, MENU_MY_LOCATION, 0, "My location");
 		 
+		 
 		// return true;
 	 //}
 	 //public boolean onCreateOptionsMenu(Menu menu) {
 		  boolean result = super.onCreateOptionsMenu(menu);
-
+		  menu.add(0, MENU_PLOT, 0, "Plot POIs");
 /*		  SubMenu myInterests = menu.addSubMenu("My interests");
 		  myInterests.add("Resturant"); 
 		  myInterests.add("Pub");
@@ -75,6 +77,10 @@ public class TabMap extends MapActivity {
 			 HaggleConnector.getInstance().shutdownHaggle();
 			 finish();
 			 return true;
+		 case MENU_PLOT:
+		 	plotPoints(HaggleConnector.getInstance().getAllObjectPoints());
+		 	Toast.makeText(this, HaggleConnector.getInstance().countObjects()+ " objects plotted.", Toast.LENGTH_SHORT).show();
+		 	return true;
 		 }
 		 return false;
 	 }
@@ -95,6 +101,14 @@ public class TabMap extends MapActivity {
 			Toast.makeText(TabMap.this, "GPS hasn't been initilized yet, try again later", Toast.LENGTH_SHORT).show();
 		}
 	 }
+	 public void plotPoints(List<GeoPoint> points){
+         Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_red);
+         for(GeoPoint o : points){
+                 MapOverlay itemizedOverlay = new MapOverlay(drawable);
+                 itemizedOverlay.addOverlay(new OverlayItem(o, "", ""));
+                 mv.getOverlays().add(itemizedOverlay);
+         }
+ }
 
 	@Override
 	protected boolean isRouteDisplayed() {
