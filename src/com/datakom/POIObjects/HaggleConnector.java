@@ -188,17 +188,24 @@ public class HaggleConnector implements EventHandler {
 		String filepath = dObj.getFilePath();
 		/* if there is a random Haggle callback, we disregard :-) */
 		if (filepath == null || filepath.length() == 0) {
-			Log.d(getClass().getSimpleName() + ": onNewDataObject", "Filepath is empty, disregarding dObj");
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Filepath is empty, disregarding dObj");
 			return;
 		}
 		
 		Attribute[] all = dObj.getAttributes();
 		
 		//case 2 - newly published dObj is re-presented again
+		/* also used to prevent cycles as we re-publish Dataobjects with additional coordinates where exchange occured
+		 * as we keep track of what we have published on application level this hinderes haggle from bouncing messages between
+		 * nodes */
 		//don't modify this data		
 		for (POIObject poi : haggleContainer.getAllPOIObjects()) {
 			for (Attribute a : all) {
 				if (a.getName().compareTo("md5") == 0 && a.getValue().compareTo(poi.getMd5()) == 0) {
+					if (neighbors != null && neighbors.length > 0) {
+						Log.d(getClass().getSimpleName() + ":onNewDataObject", "got my own published message back, preventing cycle");
+						return;
+					}
 					Log.d(getClass().getSimpleName() + ":onNewDataObject", "got newly pushed object");
 					return; 
 				}
@@ -206,7 +213,7 @@ public class HaggleConnector implements EventHandler {
 		}
 		
 		if (neighbors != null && neighbors.length > 0) {
-			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Got new data from neighbor!");
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "Case 3 - Got new data from neighbor!");
 			//case 3 - neighbors published data
 			 
 			/* transfering picture from haggle to android sdcard */
@@ -247,6 +254,7 @@ public class HaggleConnector implements EventHandler {
 		} else {
 			//case 1 - published material from previous run is re-presented again
 			//don't modify any of this data 
+			Log.d(getClass().getSimpleName() + ":onNewDataObject", "case 1 - re-loading data from haggle to container");
 			haggleContainer.add(parseDataObject(dObj));	
 		}
 	}
