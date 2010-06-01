@@ -70,8 +70,21 @@ public class HaggleContainer {
         
         ArrayList<GeoPoint> ret = new ArrayList<GeoPoint>(); 
         for (POIObject poi : collection) {
-                if(poi.getName().equals(name)){
+                if(poi.getName().compareTo(name)==0){
                 	ret.addAll(poi.getCoordsExchange());
+                }
+        }
+        return ret;
+	}
+	public synchronized GeoPoint getPoint(String name) {
+        if (collection == null || collection.size() == 0) {
+                return null;
+        }
+        
+        GeoPoint ret = null; 
+        for (POIObject poi : collection) {
+                if(poi.getName().compareTo(name)==0){
+                	ret = poi.getPoint();
                 }
         }
         return ret;
