@@ -51,7 +51,7 @@ public class HaggleContainer {
 		}
 		return ret;
 	}
-	
+
 	public synchronized ArrayList<GeoPoint> getAllPOIObjectGeoPoints() {
         if (collection == null || collection.size() == 0) {
                 return null;
@@ -60,6 +60,19 @@ public class HaggleContainer {
         ArrayList<GeoPoint> ret = new ArrayList<GeoPoint>(); 
         for (POIObject poi : collection) {
                 ret.add(poi.getPoint());
+        }
+        return ret;
+	}
+	public synchronized ArrayList<GeoPoint> getAllPOITraces(String name) {
+        if (collection == null || collection.size() == 0) {
+                return null;
+        }
+        
+        ArrayList<GeoPoint> ret = new ArrayList<GeoPoint>(); 
+        for (POIObject poi : collection) {
+                if(poi.getName().equals(name)){
+                	ret.addAll(poi.getCoordsExchange());
+                }
         }
         return ret;
 	}
