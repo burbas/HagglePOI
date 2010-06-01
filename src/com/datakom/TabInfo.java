@@ -111,7 +111,7 @@ public class TabInfo extends Activity implements OnClickListener {
 		
 		if(imageFile.exists())
 		{
-			Bitmap thePicture = BitmapFactory.decodeFile(path);
+			Bitmap thePicture = HaggleConnector.scaleImage(path, 100);//BitmapFactory.decodeFile(path);
 			iv.setImageBitmap(thePicture);
 		} else {
 			iv.setImageResource(R.drawable.btn_rating_star_off_selected);
