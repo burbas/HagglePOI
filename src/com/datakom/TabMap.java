@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.Toast;
 
+import com.datakom.POIObjects.HaggleConnector;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -70,6 +71,8 @@ public class TabMap extends MapActivity {
 			 centerMyPosition();
 			 return true;
 		 case MENU_QUIT:
+			 Log.d(getClass().getSimpleName(), "calling shutdownHaggle");
+			 HaggleConnector.getInstance().shutdownHaggle();
 			 finish();
 			 return true;
 		 }

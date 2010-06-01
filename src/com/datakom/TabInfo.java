@@ -58,7 +58,7 @@ public class TabInfo extends Activity implements OnClickListener {
 			{
 				setTitle(poiobj.getName());
 				tl.addView(addReview(poiobj.getDescription(), (int)poiobj.getRating()));
-				getPicture(poiobj.getPicPath());
+				getPicture(HaggleConnector.STORAGE_PATH + "/" + poiobj.getPicPath());
 				
 				position = poiobj.getPoint();
 				this.global_rating+=poiobj.getRating();
