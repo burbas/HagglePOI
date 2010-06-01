@@ -372,7 +372,7 @@ public class HaggleConnector implements EventHandler {
 		return result;
 	 }
 	
-	public Bitmap scaleImage(String filepath, int width) {
+	public static Bitmap scaleImage(String filepath, int width) {
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 
     	opts.inJustDecodeBounds = true;

@@ -43,6 +43,10 @@ public class TabMap extends MapActivity {
 	    Bundle extras = getIntent().getExtras();
 	    if(extras != null){
     		String name = extras.getString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE);
+    		String bool = extras.getString(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE);
+    		if (bool == null) {
+    			Log.e(getClass().getSimpleName(), "show_trace intent null");
+    		}
 	    	if(extras.getString(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE).compareTo("true")==0){
 	    		showingTraces=true;
 	    		ArrayList<GeoPoint> points = HaggleConnector.getInstance().getAllPOITraces(name);
