@@ -5,25 +5,24 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.haggle.Attribute;
 import org.haggle.DataObject;
 import org.haggle.EventHandler;
-import org.haggle.Node;
 import org.haggle.Handle;
+import org.haggle.Node;
 import org.haggle.DataObject.DataObjectException;
-
-import com.datakom.GpsLocation;
-import com.google.android.maps.GeoPoint;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.util.Log;
+
+import com.datakom.GpsLocation;
+import com.google.android.maps.GeoPoint;
 
 
 /**
@@ -315,6 +314,9 @@ public class HaggleConnector implements EventHandler {
 	
 	public ArrayList<GeoPoint> getAllObjectPoints(){
         return haggleContainer.getAllPOIObjectGeoPoints();
+	}
+	public ArrayList<GeoPoint> getAllPOITraces(String name){
+        return haggleContainer.getAllPOITraces(name);
 	}
 	public int countObjects(){
 		return haggleContainer.countObject();
