@@ -35,6 +35,7 @@ public class HaggleConnector implements EventHandler {
 	public static final String STORAGE_PATH = "/sdcard/HagglePOI";
 	public static final String SEARCH_TITLE = "SEARCH_TITLE_KEY";
 	public static final String COORDINATES_REF = "CORDINATES_REF";
+	public static final String SHOW_TRACE = "true";
 	
 	/* used for fetching from DataObject in haggle*/
 	public static final String PIC = "My_Picture";
@@ -320,6 +321,9 @@ public class HaggleConnector implements EventHandler {
 	}
 	public int countObjects(){
 		return haggleContainer.countObject();
+	}
+	public GeoPoint getPoint(String name){
+		return haggleContainer.getPoint(name);
 	}
 	public ArrayList<POIObject> getPOIObjectsByName(String name) {
 		return haggleContainer.search(name);
