@@ -67,7 +67,8 @@ public class TabTrace extends Activity implements OnClickListener {
 			// This is called when we clicked the button
 			Bundle coordinates = new Bundle();
 			// We send the object to the map so it can parse the value itself
-			coordinates.putString(com.datakom.POIObjects.HaggleConnector.COORDINATES_REF , title);
+			coordinates.putString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE , title);
+			coordinates.putString(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE, "true");
 			
 			Intent mapview = new Intent(TabTrace.this, TabMap.class);
 			mapview.putExtra("com.datakom.TabMap", coordinates);
