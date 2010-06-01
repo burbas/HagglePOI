@@ -29,6 +29,7 @@ import com.google.android.maps.GeoPoint;
 
 public class TabInfo extends Activity implements OnClickListener {
 	HaggleConnector conn;
+	private static final int MENU_TRACE = 1009;
 	
 	private double global_rating = 0.0;
 	private boolean real_object = false;
@@ -83,17 +84,14 @@ public class TabInfo extends Activity implements OnClickListener {
 	
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    if(this.real_object == true) {
-	    	inflater.inflate(R.layout.tabmenu, menu);
-	    }
-	    	
-	    return true;
+		 boolean result = super.onCreateOptionsMenu(menu);
+			 menu.add(0, MENU_TRACE, 0, "Trace");
+		 return result;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
-	        case R.id.track_exchanges:     
+	        case MENU_TRACE:     
 	        	//Bundle objects = new Bundle();
 	        	//objects.putString("TRACE_OBJECTS", this.searchTitle);
 	        	Intent traceview = new Intent(TabInfo.this, TabTrace.class);
