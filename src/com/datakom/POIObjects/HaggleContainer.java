@@ -2,6 +2,8 @@ package com.datakom.POIObjects;
 
 import java.util.ArrayList;
 
+import com.google.android.maps.GeoPoint;
+
 public class HaggleContainer {
 	private ArrayList<POIObject> collection = null;
 	private static HaggleContainer uniqueInstance = null ;
@@ -50,6 +52,25 @@ public class HaggleContainer {
 		}
 		return ret;
 	}
+	
+	public synchronized ArrayList<GeoPoint> getAllPOIObjectGeoPoints() {
+        if (collection == null || collection.size() == 0) {
+                return null;
+        }
+        
+        ArrayList<GeoPoint> ret = new ArrayList<GeoPoint>(); 
+        for (POIObject poi : collection) {
+                ret.add(poi.getPoint());
+        }
+        return ret;
+	}
+	public int countObject(){
+		if (collection == null){
+			return 0;
+		}
+		return collection.size();
+	}
+	
 	public synchronized ArrayList<POIObject> search(String s) {
 		ArrayList<POIObject> ret = new ArrayList<POIObject>();
 		

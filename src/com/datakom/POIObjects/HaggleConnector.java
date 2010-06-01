@@ -284,6 +284,12 @@ public class HaggleConnector implements EventHandler {
 		return haggleContainer.getAllPOIObjectNames();
 	}
 	
+	public ArrayList<GeoPoint> getAllObjectPoints(){
+        return haggleContainer.getAllPOIObjectGeoPoints();
+	}
+	public int countObjects(){
+		return haggleContainer.countObject();
+	}
 	public ArrayList<POIObject> getPOIObjectsByName(String name) {
 		return haggleContainer.search(name);
 	}
@@ -360,4 +366,5 @@ public class HaggleConnector implements EventHandler {
 		haggleContainer.add(o);
 		return 0;
 	}
+	
 }
