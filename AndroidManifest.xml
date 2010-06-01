@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.datakom"
-      android:versionCode="1"
-      android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name"
-    	android:theme="@android:style/Theme.NoTitleBar">
-    	<uses-library android:name="com.google.android.maps"/>
-        <activity android:name=".MainWindow"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+	package="com.datakom" android:versionCode="1" android:versionName="1.0">
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:theme="@android:style/Theme.NoTitleBar">
+		<uses-library android:name="com.google.android.maps" />
+		<activity android:name=".MainWindow" android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
 		<activity android:name="TabMap" android:label="@string/app_name">
 			<intent-filter>
 				<category android:name="android.intent.category.EMBED"></category>
@@ -25,20 +22,26 @@
 				<action android:name="android.intent.action.MAIN"></action>
 			</intent-filter>
 		</activity>
-				<activity android:name="TabCreate" android:label="@string/app_name">
+		<activity android:name="TabCreate" android:label="@string/app_name">
 			<intent-filter>
 				<category android:name="android.intent.category.EMBED"></category>
 				<action android:name="android.intent.action.MAIN"></action>
 			</intent-filter>
 		</activity>
-				<activity android:name="TabSearch" android:label="@string/app_name">
+		<activity android:name="TabSearch" android:label="@string/app_name">
 			<intent-filter>
 				<category android:name="android.intent.category.EMBED"></category>
 				<action android:name="android.intent.action.MAIN"></action>
 			</intent-filter>
 		</activity>
 		<activity android:name="CameraMain"></activity>
-    </application>
+		<activity android:name="TabTrace" android:label="@string/app_name">
+			<intent-filter>
+				<category android:name="android.intent.category.EMBED"></category>
+				<action android:name="android.intent.action.MAIN"></action>
+			</intent-filter>
+		</activity>
+	</application>
       
 	<uses-sdk android:minSdkVersion="7"/>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
