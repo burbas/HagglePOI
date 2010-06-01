@@ -86,17 +86,22 @@ public class TabMap extends MapActivity {
 	 }
 	 
 	 /* Animates view to GeoPoint and show Latitude, Longitude, accuracy and if the accuracy is within allowed radius */
-	 public void centerMyPosition(){
+	public void centerMyPosition(){
+        Drawable drawable = this.getResources().getDrawable(R.drawable.location_point_blue);
+		mv.getOverlays().clear();
 		GeoPoint current = gpsLocation.getCurrentPoint();
 		mc = mv.getController();
 		if (current != null){
+            MapOverlay itemizedOverlay = new MapOverlay(drawable);
+            itemizedOverlay.addOverlay(new OverlayItem(current, "", ""));
+            mv.getOverlays().add(itemizedOverlay);
 			mc.animateTo(current);
 			Toast.makeText(getBaseContext(), 
-				"Lat: " + gpsLocation.getCurrentPoint().getLatitudeE6() + 
-				"\nLng: " + gpsLocation.getCurrentPoint().getLongitudeE6()+ 
-				"\nAccuracy: "+ gpsLocation.getAccuracy() +
-				"\nAccurate Enough: "+ gpsLocation.accurateEnough(),
-				Toast.LENGTH_SHORT).show();
+					"Lat: " + gpsLocation.getCurrentPoint().getLatitudeE6() + 
+					"\nLng: " + gpsLocation.getCurrentPoint().getLongitudeE6()+ 
+					"\nAccuracy: "+ gpsLocation.getAccuracy() +
+					"\nAccurate Enough: "+ gpsLocation.accurateEnough(),
+					Toast.LENGTH_SHORT).show();
 		}else{
 			Toast.makeText(TabMap.this, "GPS hasn't been initilized yet, try again later", Toast.LENGTH_SHORT).show();
 		}
