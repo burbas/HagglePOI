@@ -79,7 +79,6 @@ public class TabMap extends MapActivity {
 		 	plotPoints(HaggleConnector.getInstance().getAllObjectPoints());
 		 	Toast.makeText(this, HaggleConnector.getInstance().countObjects()+ " objects plotted.", Toast.LENGTH_SHORT).show();
 		 	return true;
-		 	
 		 }
 		 return false;
 	 }
