@@ -94,10 +94,11 @@ public class TabInfo extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	        case R.id.track_exchanges:     
-	        	Bundle objects = new Bundle();
-	        	objects.putString("TRACE_OBJECTS", this.searchTitle);
+	        	//Bundle objects = new Bundle();
+	        	//objects.putString("TRACE_OBJECTS", this.searchTitle);
 	        	Intent traceview = new Intent(TabInfo.this, TabTrace.class);
-				traceview.putExtra("TRACE_OBJECTS", this.searchTitle);
+	        	traceview.putExtra(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE, searchTitle);
+				traceview.putExtra(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE, "true");
 				TabInfo.this.startActivity(traceview);
         	break;
 	    }
@@ -201,13 +202,11 @@ public class TabInfo extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch(v.getId()) {
 		case R.id.view_on_map_button:
-			Bundle coordinates = new Bundle();
-			coordinates.putDouble("LATITUDE", 1);
-			coordinates.putDouble("LONGITUDE", 2);
 			
 			// View the new intent
 			Intent mapview = new Intent(TabInfo.this, TabMap.class);
-			mapview.putExtra("com.datakom.TabMap", coordinates);
+			mapview.putExtra(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE, searchTitle);
+			mapview.putExtra(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE, "false");
 			TabInfo.this.startActivity(mapview);
 			break;
 		}
