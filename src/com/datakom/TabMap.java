@@ -50,9 +50,11 @@ public class TabMap extends MapActivity {
 	    	if(extras.getString(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE).compareTo("true")==0){
 	    		showingTraces=true;
 	    		ArrayList<GeoPoint> points = HaggleConnector.getInstance().getAllPOITraces(name);
-	    		if(points != null){
+	    		if(points != null && points.size() != 0){
 	    			plotPoints(points);
 	    			mc.animateTo(points.get(0));
+	    		}else{
+	    			Toast.makeText(this, "No points to plot.", Toast.LENGTH_SHORT).show();
 	    		}
 	    	}
 	    	else{

@@ -64,13 +64,14 @@ public class TabTrace extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		if(v.getId() == R.id.show_on_map) {
 			// This is called when we clicked the button
-			Bundle coordinates = new Bundle();
+			//Bundle coordinates = new Bundle();
 			// We send the object to the map so it can parse the value itself
-			coordinates.putString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE , title);
-			coordinates.putString(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE, "true");
+			//coordinates.putString(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE , title);
+			//coordinates.putString(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE, "true");
 			
 			Intent mapview = new Intent(TabTrace.this, TabMap.class);
-			mapview.putExtra("com.datakom.TabMap", coordinates);
+			mapview.putExtra(com.datakom.POIObjects.HaggleConnector.SEARCH_TITLE , title);
+			mapview.putExtra(com.datakom.POIObjects.HaggleConnector.SHOW_TRACE , "true");
 			TabTrace.this.startActivity(mapview);
 		}
 		
