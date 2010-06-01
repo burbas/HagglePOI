@@ -1,7 +1,5 @@
 package com.datakom;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -9,13 +7,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import com.datakom.POIObjects.HaggleConnector;
 
 class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 	private static final String TAG = "Preview";
@@ -70,7 +65,6 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 		// Because the CameraDevice object is not a shared resource, it's very
 		// important to release it when the activity is paused.
 		camera.stopPreview();
-		camera.release();
 		camera = null;
 	}
 

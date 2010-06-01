@@ -76,7 +76,6 @@ public class CameraMain extends Activity {
 				Intent i = new Intent();
 				i.putExtra("filename", filename);
 				setResult(1000, i); //returning value
-				
 			} catch (FileNotFoundException e) {
 				Log.e(getClass().getSimpleName(), "file not found: " + e.getMessage());
 			} catch (IOException e) {

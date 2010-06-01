@@ -397,6 +397,10 @@ public class HaggleConnector implements EventHandler {
 			dObj.addAttribute(C_LAT, Integer.toString(o.getPoint().getLatitudeE6()), 1);
 			dObj.addAttribute(C_LON, Integer.toString(o.getPoint().getLongitudeE6()), 1);
 
+			for(GeoPoint p : o.getCoordsExchange()) {
+				dObj.addAttribute(EX_COORD, p.getLatitudeE6() + "#" + p.getLongitudeE6(), 1);
+			}
+			
 			/* scaling is done due to the fact that we push our pictures as an attribute, 
 			 * probable limitations in our usage of haggle cannot manage arbitrary long attributes, 
 			 * atleast it seems so */
@@ -407,8 +411,7 @@ public class HaggleConnector implements EventHandler {
 			//hacking around haggle
 			String base64_pic = Base64.encodeBytes(arr);
 			dObj.addAttribute(PIC, base64_pic, 1); 
-//			dObj.setThumbnail(arr);
-
+			
 			getHaggleHandle().publishDataObject(dObj);
 		} catch (DataObjectException e) {
 			Log.e(getClass().getSimpleName(), "Could not create object for: " + o.getName());
